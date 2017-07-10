@@ -2,7 +2,6 @@
 
 from api_docs.server_doc import server_doc
 from api_docs.drone_doc import drone_doc
-import pdb
 
 
 def create_setter(prop):
@@ -51,4 +50,3 @@ if __name__ == "__main__":
     drone_parsed_classes = drone_doc["supportedClass"]
 
     class_ = create_classes(drone_parsed_classes)
-    pdb.set_trace()
