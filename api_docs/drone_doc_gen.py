@@ -1,102 +1,54 @@
 """API Doc generator for the drone side API."""
 
-import json
-from doc_gen import HydraDoc, HydraClass, HydraProp, HydraOp
+from doc_writer import HydraDoc, HydraClass, HydraProp, HydraOp
 
 
-def drone_doc(API):
+def drone_doc(API, BASE_URL):
     """Generate API Doc for drone."""
     # Main API Doc
     api_doc = HydraDoc(API,
                        "API Doc for the drone side API",
                        "API Documentation for the drone side system",
-                       "/"+API+"/")
+                       "/"+API+"/",
+                       BASE_URL)
 
-    # Drone Class
-    drone = HydraClass("Drone", "Drone", "Class for a drone", API)
+    # Status Class
+    status = HydraClass("Status", "Status", "Class for drone status objects", API, BASE_URL)
 
     # Properties
-    drone.add_supported_prop(HydraProp("http://auto.schema.org/speed", "Speed", "true", "true", "true").get())
-    drone.add_supported_prop(HydraProp("http://schema.org/geo", "Position", "true", "true", "true").get())
-    drone.add_supported_prop(HydraProp("http://schema.org/fuelCapacity", "Battery", "true", "true", "true").get())
-    drone.add_supported_prop(HydraProp("http://schema.org/device", "Sensor", "true", "false", "true").get())
-    drone.add_supported_prop(HydraProp("http://schema.org/model", "Model", "true", "false", "true").get())
-    drone.add_supported_prop(HydraProp("https://schema.org/status", "Status", "true", "true", "true").get())
+    status.add_supported_prop(HydraProp("http://auto.schema.org/speed", "Speed", "true", "false", "false").get())
+    status.add_supported_prop(HydraProp("http://schema.org/geo", "Position", "true", "false", "false").get())
+    status.add_supported_prop(HydraProp("http://schema.org/fuelCapacity", "Battery", "true", "true", "false").get())
+    status.add_supported_prop(HydraProp("http://schema.org/device", "Sensor", "true", "true", "false").get())
+    status.add_supported_prop(HydraProp("http://schema.org/model", "Model", "true", "true", "false").get())
+    status.add_supported_prop(HydraProp("https://schema.org/status", "SensorStatus", "true", "false", "false").get())
+
+    # Drone Class
+    drone = HydraClass("Drone", "Drone", "Class for a drone", API, BASE_URL)
+
+    # Properties
+    drone.add_supported_prop(HydraProp("vocab:Status", "DroneStatus", "true", "false", "false").get())
 
     # Operations
-    drone.add_supported_op(HydraOp("/"+API+"/change_speed",
-                                   "ChangeSpeed",
-                                   "PUT",
-                                   "http://auto.schema.org/speed",
-                                   "null",
-                                   [{"code": 200, "description": "Speed Changed"}]).get())
-
-    drone.add_supported_op(HydraOp("/"+API+"/change_position",
-                                   "ChangePosition",
-                                   "PUT",
-                                   "http://schema.org/geo",
-                                   "null",
-                                   [{"code": 200, "description": "Position Changed"}]).get())
-
-    drone.add_supported_op(HydraOp("/"+API+"/change_status",
+    drone.add_supported_op(HydraOp("/"+API+"/issue_order",
                                    "ChangeStatus",
-                                   "PUT",
-                                   "http://schema.org/status",
+                                   "POST",
+                                   "vocab: Status",
                                    "null",
                                    [{"code": 200, "description": "Status Changed"}]).get())
-
-    drone.add_supported_op(HydraOp("/"+API+"/get_speed",
-                                   "GetSpeed",
-                                   "GET",
-                                   "null",
-                                   "http://auto.schema.org/speed",
-                                   [{"code": 200, "description": "Speed returned"}]).get())
-
-    drone.add_supported_op(HydraOp("/"+API+"/get_position",
-                                   "GetPosition",
-                                   "GET",
-                                   "null",
-                                   "http://schema.org/geo",
-                                   [{"code": 200, "description": "Position returned"}]).get())
-
-    drone.add_supported_op(HydraOp("/"+API+"/get_battery_status",
-                                   "GetBatteryStatus",
-                                   "GET",
-                                   "null",
-                                   "http://schema.org/fuelCapacity",
-                                   [{"code": 200, "description": "Battery status returned"}]).get())
-
-    drone.add_supported_op(HydraOp("/"+API+"/get_model",
-                                   "GetModel",
-                                   "GET",
-                                   "null",
-                                   "http://schema.org/model",
-                                   [{"code": 200, "description": "Model returned"}]).get())
 
     drone.add_supported_op(HydraOp("/"+API+"/get_status",
                                    "GetStatus",
                                    "GET",
                                    "null",
-                                   "http://schema.org/status",
-                                   [{"code": 200, "description": "Status returned"}]).get())
+                                   "vocab: Status",
+                                   [{"code": 200, "description": "Status Returned"}]).get())
 
-    drone.add_supported_op(HydraOp("/"+API+"/get_temperature",
-                                   "GetTemperature",
-                                   "GET",
-                                   "null",
-                                   "http://schema.org/Float",
-                                   [{"code": 200, "description": "Temperature returned"}]).get())
-
-    drone.add_supported_op(HydraOp("/"+API+"/recharge",
-                                   "GetTemperature",
-                                   "POST",
-                                   "http://schema.org/Action",
-                                   "http://schema.org/fuelCapacity",
-                                   [{"code": 200, "description": "Successfully charged"}]).get())
+    api_doc.add_supported_class(status.get())
     api_doc.add_supported_class(drone.get())
 
     return api_doc
 
 
 if __name__ == "__main__":
-    print(drone_doc("droneapi").to_json())
+    print(drone_doc("droneapi", "http://hydrus.com/").to_json())

@@ -4,11 +4,11 @@
 class HydraDoc():
     """Template for a new API Doc."""
 
-    def __init__(self, API, title, desc, entrypoint):
+    def __init__(self, API, title, desc, entrypoint, base_url):
         """Initialize the Hydra_APIDoc."""
         self.doc = {
-            "@context": "http://hydrus.com/contexts/"+API+".jsonld",
-            "@id": "http://hydrus.com/"+API+"/vocab",
+            "@context": base_url + "contexts/" + API + ".jsonld",
+            "@id": base_url + API + "/vocab",
             "@type": "ApiDocumentation",
             "title": title,
             "description": desc,
@@ -40,12 +40,13 @@ class HydraDoc():
 class HydraClass():
     """Template for a new class."""
 
-    def __init__(self, class_, title, desc, entrypoint):
+    def __init__(self, class_, title, desc, entrypoint, base_url, sub_classof=None):
         """Initialize the Hydra_Class."""
         self.class_ = {
-            "@context": "http://hydrus.com/context/"+class_+".jsonld",
-            "@id": "http://hydrus.com/"+entrypoint+"/vocab/"+class_,
+            "@context": base_url + "context/" + class_ + ".jsonld",
+            "@id": base_url + entrypoint + "/vocab#" + class_,
             "@type": "Class",
+            "subClassOf": "null",
             "title": title,
             "description": desc,
             "supportedProperty": [
@@ -55,6 +56,8 @@ class HydraClass():
 
             ]
         }
+        if sub_classof is not None:
+            self.class_["subClassOf"] = sub_classof
 
     def add_supported_prop(self, prop):
         """Add a new supportedProperty."""

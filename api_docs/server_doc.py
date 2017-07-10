@@ -9,44 +9,76 @@ server_doc = {
     "possibleStatus": [],
     "supportedClass": [
         {
+            "@context": "http://hydrus.com/context/Status.jsonld",
+            "@id": "http://hydrus.com/serverapi/vocab#Status",
+            "@type": "Class",
+            "description": "Class for drone status objects",
+            "subClassOf": "null",
+            "supportedOperation": [],
+            "supportedProperty": [
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://auto.schema.org/speed",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Speed",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/geo",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Position",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/fuelCapacity",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Battery",
+                    "writeable": "true"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/device",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Sensor",
+                    "writeable": "true"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/model",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Model",
+                    "writeable": "true"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "https://schema.org/status",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "SensorStatus",
+                    "writeable": "false"
+                }
+            ],
+            "title": "Status"
+        },
+        {
             "@context": "http://hydrus.com/context/Drone.jsonld",
-            "@id": "http://hydrus.com/serverapi/vocab/Drone",
+            "@id": "http://hydrus.com/serverapi/vocab#Drone",
             "@type": "Class",
             "description": "Class for a drone",
+            "subClassOf": "null",
             "supportedOperation": [
                 {
-                    "@id": "/serverapi/change_speed",
+                    "@id": "/serverapi/issue_order",
                     "@type": "Operation",
-                    "expects": "http://auto.schema.org/speed",
-                    "method": "PUT",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Speed Changed"
-                        }
-                    ],
-                    "returns": "null",
-                    "title": "ChangeSpeed"
-                },
-                {
-                    "@id": "/serverapi/change_position",
-                    "@type": "Operation",
-                    "expects": "http://schema.org/geo",
-                    "method": "PUT",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Position Changed"
-                        }
-                    ],
-                    "returns": "null",
-                    "title": "ChangePosition"
-                },
-                {
-                    "@id": "/serverapi/change_status",
-                    "@type": "Operation",
-                    "expects": "http://schema.org/status",
-                    "method": "PUT",
+                    "expects": "vocab: Status",
+                    "method": "POST",
                     "possibleStatus": [
                         {
                             "code": 200,
@@ -57,62 +89,6 @@ server_doc = {
                     "title": "ChangeStatus"
                 },
                 {
-                    "@id": "/serverapi/get_speed",
-                    "@type": "Operation",
-                    "expects": "null",
-                    "method": "GET",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Speed returned"
-                        }
-                    ],
-                    "returns": "http://auto.schema.org/speed",
-                    "title": "GetSpeed"
-                },
-                {
-                    "@id": "/serverapi/get_position",
-                    "@type": "Operation",
-                    "expects": "null",
-                    "method": "GET",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Position returned"
-                        }
-                    ],
-                    "returns": "http://schema.org/geo",
-                    "title": "GetPosition"
-                },
-                {
-                    "@id": "/serverapi/get_battery_status",
-                    "@type": "Operation",
-                    "expects": "null",
-                    "method": "GET",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Battery status returned"
-                        }
-                    ],
-                    "returns": "http://schema.org/fuelCapacity",
-                    "title": "GetBatteryStatus"
-                },
-                {
-                    "@id": "/serverapi/get_model",
-                    "@type": "Operation",
-                    "expects": "null",
-                    "method": "GET",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Model returned"
-                        }
-                    ],
-                    "returns": "http://schema.org/model",
-                    "title": "GetModel"
-                },
-                {
                     "@id": "/serverapi/get_status",
                     "@type": "Operation",
                     "expects": "null",
@@ -120,118 +96,51 @@ server_doc = {
                     "possibleStatus": [
                         {
                             "code": 200,
-                            "description": "Status returned"
+                            "description": "Status Returned"
                         }
                     ],
-                    "returns": "http://schema.org/status",
+                    "returns": "vocab: Status",
                     "title": "GetStatus"
-                },
-                {
-                    "@id": "/serverapi/get_temperature",
-                    "@type": "Operation",
-                    "expects": "null",
-                    "method": "GET",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Temperature returned"
-                        }
-                    ],
-                    "returns": "http://schema.org/Float",
-                    "title": "GetTemperature"
-                },
-                {
-                    "@id": "/serverapi/recharge",
-                    "@type": "Operation",
-                    "expects": "http://schema.org/Action",
-                    "method": "POST",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Successfully charged"
-                        }
-                    ],
-                    "returns": "http://schema.org/fuelCapacity",
-                    "title": "GetTemperature"
                 }
             ],
             "supportedProperty": [
                 {
                     "@type": "SupportedProperty",
-                    "property": "http://auto.schema.org/speed",
+                    "property": "vocab:Status",
                     "readable": "true",
-                    "required": "true",
-                    "title": "Speed",
-                    "writeable": "true"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/geo",
-                    "readable": "true",
-                    "required": "true",
-                    "title": "Position",
-                    "writeable": "true"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/fuelCapacity",
-                    "readable": "true",
-                    "required": "true",
-                    "title": "Battery",
-                    "writeable": "true"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/device",
-                    "readable": "true",
-                    "required": "true",
-                    "title": "Sensor",
+                    "required": "false",
+                    "title": "DroneStatus",
                     "writeable": "false"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/model",
-                    "readable": "true",
-                    "required": "true",
-                    "title": "Model",
-                    "writeable": "false"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "https://schema.org/status",
-                    "readable": "true",
-                    "required": "true",
-                    "title": "Status",
-                    "writeable": "true"
                 }
             ],
             "title": "Drone"
         },
         {
             "@context": "http://hydrus.com/context/LogEntry.jsonld",
-            "@id": "http://hydrus.com/serverapi/vocab/LogEntry",
+            "@id": "http://hydrus.com/serverapi/vocab#LogEntry",
             "@type": "Class",
             "description": "Class for a log entry",
+            "subClassOf": "null",
             "supportedOperation": [
                 {
-                    "@id": "/serverapi/log_entry",
+                    "@id": "/serverapi/get_latest_log",
                     "@type": "Operation",
-                    "expects": "http://hydrus.com/LogEntry",
-                    "method": "POST",
+                    "expects": "vocab:LogEntry",
+                    "method": "GET",
                     "possibleStatus": [
                         {
                             "code": 200,
-                            "description": "Log entered"
+                            "description": "Log returned"
                         }
                     ],
                     "returns": "null",
-                    "title": "CreateEntry"
+                    "title": "GetLogEntries"
                 }
             ],
             "supportedProperty": [
                 {
                     "@type": "SupportedProperty",
-                    "property": "http://hydrus.com/serverapi/vocab/Drone",
+                    "property": "vocab:Drone",
                     "readable": "true",
                     "required": "true",
                     "title": "Drone",
@@ -255,49 +164,9 @@ server_doc = {
                 },
                 {
                     "@type": "SupportedProperty",
-                    "property": "http://auto.schema.org/speed",
+                    "property": "vocab:Status",
                     "readable": "true",
-                    "required": "false",
-                    "title": "Speed",
-                    "writeable": "true"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/geo",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "Position",
-                    "writeable": "true"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/fuelCapacity",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "Battery",
-                    "writeable": "true"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/device",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "Sensor",
-                    "writeable": "false"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/model",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "Model",
-                    "writeable": "false"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "https://schema.org/status",
-                    "readable": "true",
-                    "required": "false",
+                    "required": "true",
                     "title": "Status",
                     "writeable": "true"
                 }
@@ -306,9 +175,10 @@ server_doc = {
         },
         {
             "@context": "http://hydrus.com/context/Area.jsonld",
-            "@id": "http://hydrus.com/serverapi/vocab/Area",
+            "@id": "http://hydrus.com/serverapi/vocab#Area",
             "@type": "Class",
             "description": "Class for Area of Interest of the server",
+            "subClassOf": "null",
             "supportedOperation": [
                 {
                     "@id": "/serverapi/update_area",
