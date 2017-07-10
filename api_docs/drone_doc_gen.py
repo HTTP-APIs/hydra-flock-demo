@@ -1,4 +1,4 @@
-False"""API Doc generator for the drone side API."""
+"""API Doc generator for the drone side API."""
 import pprint
 from parsed_classes_writer import ParsedClasses, HydraClass, HydraProp, HydraOp
 
