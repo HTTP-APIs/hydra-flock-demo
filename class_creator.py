@@ -50,3 +50,4 @@ if __name__ == "__main__":
     drone_parsed_classes = drone_doc["supportedClass"]
 
     class_ = create_classes(drone_parsed_classes)
+    print(class_)
