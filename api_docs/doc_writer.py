@@ -124,3 +124,12 @@ class HydraOp():
     def get(self):
         """Get the Hydra op as a python dict."""
         return self.op
+
+
+def gen_parsed_classes(api_doc):
+    """Extracts the parsed classes from the Hydra  APIDoc."""
+    parsed_classes = list()
+    for class_ in api_doc["supportedClass"]:
+        if class_["@type"] != "Class":
+            parsed_classes.append(class_)
+    return parsed_classes
