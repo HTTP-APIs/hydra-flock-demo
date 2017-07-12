@@ -1,0 +1,64 @@
+version: "2"
+
+services:
+  central_server:
+    restart: always
+    build: ./central_server/
+    ports:
+      - "8080:80"
+    environment:
+      # - HYDRUS_SERVER_URL=http://localhost:8080/ ## For linux local
+      - HYDRUS_SERVER_URL=http://192.168.99.100:8080/ ## For windows 10
+      # - HYDRUS_SERVER_URL=http://54.169.232.177:8080/
+      - POSTGRES_URL=postgres_cs
+    networks:
+      main:
+        aliases:
+          - central_server
+
+
+  postgres:
+    restart: always
+    environment:
+      - POSTGRES_USER=hydra
+      - POSTGRES_PASSWORD=hailhydra
+      - POSTGRES_DB=hydrus
+    image: postgres:latest
+    ports:
+      - "9000:5432"
+    networks:
+      main:
+        aliases:
+          - postgres_cs
+
+
+  drone1:
+    restart: always
+    build: ./drone1/
+    ports:
+      - "8081:80"
+    environment:
+      # - HYDRUS_SERVER_URL=http://localhost:8081/ ## For linux local
+      - HYDRUS_SERVER_URL=http://192.168.99.100:8081/ ## For windows 10
+      # - HYDRUS_SERVER_URL=http://54.169.232.177:8081/
+    networks:
+      main:
+        aliases:
+          - drone1
+
+  drone2:
+    restart: always
+    build: ./drone2/
+    ports:
+      - "8082:80"
+    environment:
+      # - HYDRUS_SERVER_URL=http://localhost:8082/ ## For linux local
+      - HYDRUS_SERVER_URL=http://192.168.99.100:8082/ ## For windows 10
+      # - HYDRUS_SERVER_URL=http://54.169.232.177:8082/
+    networks:
+      main:
+        aliases:
+          - drone2
+
+networks:
+  main:
