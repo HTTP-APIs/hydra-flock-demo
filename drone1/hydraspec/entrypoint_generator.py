@@ -10,16 +10,17 @@ def gen_supported_operation(item_type):
     }
     return op_template
 
-def gen_supported_ops(parsed_classes):
+def gen_supported_ops(classes_, entrypoint_classes):
     """Generate a list of supported operation for entrypoint from parsed classes."""
     supported_ops = []
-    for class_ in parsed_classes:
-        supported_ops.append(gen_supported_operation(class_["title"]))
+    for class_ in classes_:
+        if class_['title'] in entrypoint_classes:
+            supported_ops.append(gen_supported_operation(class_["title"]))
 
     return supported_ops
 
 
-def gen_entrypoint(server_url, parsed_classes):
+def gen_entrypoint(server_url, classes_, entrypoint_classes):
     """Generate EntryPoint."""
     SERVER_URL = server_url
 
@@ -29,7 +30,7 @@ def gen_entrypoint(server_url, parsed_classes):
       "@type": "EntryPoint",
     }
 
-    supported_ops = gen_supported_ops(parsed_classes)
+    supported_ops = gen_supported_ops(classes_, entrypoint_classes)
     for op in supported_ops:
         entrypoint_template[list(op.keys())[0]] = op[list(op.keys())[0]]
     return entrypoint_template

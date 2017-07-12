@@ -1,4 +1,4 @@
-parsed_classes = [
+classes_ = [
     {
         "@id": "http://schema.org/Order",
         "@type": "hydra:Class",
@@ -67,3 +67,10 @@ parsed_classes = [
     },
 
 ]
+
+
+## Classes that need to be a collection
+collection_classes = ["order"]
+
+## Classes that need to be shown at Entrypoint
+entrypoint_classes = ["order"]

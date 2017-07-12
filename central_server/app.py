@@ -4,9 +4,7 @@ import os
 import json
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
-# from hydrus.metadata.subsystem_parsed_classes import parsed_classes
-# from hydrus.metadata.drone_parsed_classes import parsed_classes
-from hydrus.metadata.server_parsed_classes import parsed_classes
+from hydrus.metadata.server_classes import classes_, entrypoint_classes, collection_classes
 from hydrus.hydraspec.vocab_generator import gen_vocab
 from hydrus.hydraspec.entrypoint_generator import gen_entrypoint
 from hydrus.hydraspec.entrypoint_context_generator import gen_entrypoint_context
@@ -18,19 +16,21 @@ CORS(app)
 app.url_map.strict_slashes = False
 api = Api(app)
 
-global SERVER_URL, SEMANTIC_REF_NAME, SEMANTIC_REF_URL, PARSED_CLASSES
+global SERVER_URL, SEMANTIC_REF_NAME, SEMANTIC_REF_URL, CLASSES_, ENTRYPOINT_CLASSES, COLLECTION_CLASSES
 SERVER_URL = os.environ.get("HYDRUS_SERVER_URL", "localhost/")
 # TEMP ( will change later)
-SEMANTIC_REF_NAME = "central_server"
-SEMANTIC_REF_URL = "http://centralserver:8080/api/vocab#"
-PARSED_CLASSES = parsed_classes
+SEMANTIC_REF_NAME = "drone"
+SEMANTIC_REF_URL = "http://drone:8081/api/vocab#"
+CLASSES_ = classes_
+ENTRYPOINT_CLASSES = entrypoint_classes
+COLLECTION_CLASSES = collection_classes
 
 # Save data in memory to improve performance
 global VOCAB, ENTRYPOINT, ENTRYPOINT_CONTEXT
-VOCAB = gen_vocab(PARSED_CLASSES, SERVER_URL,
+VOCAB = gen_vocab(CLASSES_, ENTRYPOINT_CLASSES, COLLECTION_CLASSES, SERVER_URL,
                   SEMANTIC_REF_NAME, SEMANTIC_REF_URL)
-ENTRYPOINT = gen_entrypoint(SERVER_URL, PARSED_CLASSES)
-ENTRYPOINT_CONTEXT = gen_entrypoint_context(SERVER_URL, parsed_classes)
+ENTRYPOINT = gen_entrypoint(SERVER_URL, CLASSES_, ENTRYPOINT_CLASSES)
+ENTRYPOINT_CONTEXT = gen_entrypoint_context(SERVER_URL, CLASSES_, ENTRYPOINT_CLASSES)
 
 
 def validObject(object_):
@@ -94,10 +94,10 @@ def set_response_headers(resp, ct="application/ld+json", headers = [], status_co
     return resp
 
 
-def get_supported_properties(parsed_classes, category, vocab):
+def get_supported_properties(classes_, category, vocab):
     """Filter supported properties with their title (title, property) for a specific class from the parsed classes."""
     obj = None
-    for object_ in parsed_classes:
+    for object_ in classes_:
         if object_["title"] == category:
             obj = object_
     # print(obj, category)
@@ -120,7 +120,7 @@ def get_supported_properties(parsed_classes, category, vocab):
     return supported_props
 
 
-def gen_context(parsed_classes, server_url, category):
+def gen_context(classes_, server_url, category):
     """Generate dynamic contexts for every item."""
     SERVER_URL = server_url
 
@@ -134,7 +134,7 @@ def gen_context(parsed_classes, server_url, category):
     }
 
     # Get supported properties
-    supported_props = get_supported_properties(PARSED_CLASSES, category, VOCAB)
+    supported_props = get_supported_properties(CLASSES_, category, VOCAB)
     for title, value in supported_props:
         context_template["@context"][title] = value
 
@@ -159,7 +159,7 @@ def gen_collection_context(server_url, type_):
     return template
 
 
-def hydrafy(parsed_classes, object_, collection=False):
+def hydrafy(classes_, object_, collection=False):
     """Add hydra context to objects."""
     if collection:
         object_["@context"] = "/api/contexts/" + object_["@type"] + ".jsonld"
@@ -186,7 +186,7 @@ class Item(Resource):
         """GET object with id = id_ from the database."""
         response = crud.get(id_, type_)
         if "object" in response:
-            return set_response_headers(jsonify(hydrafy(PARSED_CLASSES, response)))
+            return set_response_headers(jsonify(hydrafy(CLASSES_, response)))
         else:
             status_code = int(list(response.keys())[0])
             return set_response_headers(jsonify(response), status_code=status_code)
@@ -238,7 +238,7 @@ class ItemCollection(Resource):
         response = crud.get_collection(type_)
 
         if "members" in response:
-            return set_response_headers(jsonify(hydrafy(PARSED_CLASSES, response, collection=True)))
+            return set_response_headers(jsonify(hydrafy(CLASSES_, response, collection=True)))
         else:
             status_code = int(list(response.keys())[0])
             return set_response_headers(jsonify(response), status_code=status_code)
@@ -279,7 +279,7 @@ class Contexts(Resource):
                 status_code = int(list(response.keys())[0])
                 return set_response_headers(jsonify(response), status_code=status_code)
         else:
-            response = gen_context(PARSED_CLASSES, SERVER_URL, category)
+            response = gen_context(CLASSES_, SERVER_URL, category)
             if "@context" in response:
                 return set_response_headers(jsonify(response))
             else:

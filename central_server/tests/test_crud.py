@@ -8,7 +8,7 @@ import hydrus.data.crud as crud
 from hydrus.data.db_models import Base
 from hydrus.hydraspec.vocab_generator import gen_vocab
 import hydrus.data.doc_parse as parser
-from hydrus.app import SERVER_URL, SEMANTIC_REF_URL, SEMANTIC_REF_NAME, PARSED_CLASSES
+from hydrus.app import SERVER_URL, SEMANTIC_REF_URL, SEMANTIC_REF_NAME, CLASSES_
 
 def object_1():
     """Return a copy of an object."""
@@ -63,7 +63,7 @@ class TestCRUD(unittest.TestCase):
         self.session = session
 
         print("Adding Classes...")
-        classes = parser.get_classes(gen_vocab(PARSED_CLASSES, SERVER_URL, SEMANTIC_REF_NAME, SEMANTIC_REF_URL))
+        classes = parser.get_classes(gen_vocab(CLASSES_, SERVER_URL, SEMANTIC_REF_NAME, SEMANTIC_REF_URL))
         parser.insert_classes(classes, self.session)
 
         print("Adding Properties...")

@@ -38,11 +38,12 @@ def gen_entrypoint_supported_prop(item_type):
     return prop_template
 
 
-def gen_entrypoint_supported_props(parsed_classes):
-    """Generate supported properties from parsed_classes for Entrypoint["supportedProperty"]."""
+def gen_entrypoint_supported_props(classes_, entrypoint_classes):
+    """Generate supported properties from classes_ for Entrypoint["supportedProperty"]."""
     supported_props = []
-    for class_ in parsed_classes:
-        supported_props.append(gen_entrypoint_supported_prop(class_["title"]))
+    for class_ in classes_:
+        if class_["title"] in entrypoint_classes:
+            supported_props.append(gen_entrypoint_supported_prop(class_["title"]))
     return supported_props
 
 
@@ -102,16 +103,17 @@ def gen_item_collection(semantic_ref_name, item_):
     return collection_template
 
 
-def gen_item_collection_list(semantic_ref_name, parsed_classes):
+def gen_item_collection_list(semantic_ref_name, classes_, collection_classes):
     """Generate a list of item collections for the vocab."""
     collections = []
-    for class_ in parsed_classes:
-        collections.append(gen_item_collection(
-            semantic_ref_name, class_))
+    for class_ in classes_:
+        if class_["title"] in collection_classes:
+            collections.append(gen_item_collection(
+                semantic_ref_name, class_))
     return collections
 
 
-def gen_vocab(parsed_classes, server_url, semantic_ref_name, semantic_ref_url):
+def gen_vocab(classes_, entrypoint_classes, collection_classes, server_url, semantic_ref_name, semantic_ref_url):
     """Generate Hydra Vocabulary."""
     SERVER_URL = server_url
     SEMANTIC_REF_NAME = semantic_ref_name
@@ -212,18 +214,18 @@ def gen_vocab(parsed_classes, server_url, semantic_ref_name, semantic_ref_url):
                         ]
                     }
                 ],
-                "supportedProperty": gen_entrypoint_supported_props(parsed_classes)
+                "supportedProperty": gen_entrypoint_supported_props(classes_, entrypoint_classes)
             },
             # Parsed classed from hydrus.hydraspec.parser will be added here
 
         ]
     }
     #Add parsed hydra classes to the vocabulary
-    for class_ in parsed_classes:
+    for class_ in classes_:
         vocab_template["supportedClass"].append(class_)
 
     #Add different item collections to the hydra vocabulary
-    collection_list = gen_item_collection_list(semantic_ref_name, parsed_classes)
+    collection_list = gen_item_collection_list(semantic_ref_name, classes_, collection_classes)
     for collection_item in collection_list:
         vocab_template["supportedClass"].append(collection_item)
 
@@ -233,5 +235,5 @@ def gen_vocab(parsed_classes, server_url, semantic_ref_name, semantic_ref_url):
 if __name__ == "__main__":
     # DEMO
     pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(gen_vocab(parsed_classes, SERVER_URL, "subsystems",
+    pp.pprint(gen_vocab(classes_, SERVER_URL, "subsystems",
           "http://ontology.projectchronos.eu/subsystems"))

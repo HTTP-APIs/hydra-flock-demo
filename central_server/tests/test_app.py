@@ -6,7 +6,7 @@ import tempfile
 import os
 import hydrus.app as views
 import json
-from hydrus.app import SERVER_URL, SEMANTIC_REF_URL, SEMANTIC_REF_NAME, PARSED_CLASSES
+from hydrus.app import SERVER_URL, SEMANTIC_REF_URL, SEMANTIC_REF_NAME, CLASSES_
 
 
 

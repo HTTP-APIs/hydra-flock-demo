@@ -1,4 +1,4 @@
-parsed_classes = [
+classes_ = [
     # 1. Drone Class
     {
         "@id": "http://hydrus.com/drone",
@@ -407,9 +407,10 @@ parsed_classes = [
         ]
     },
 
-
-
-
-
-
 ]
+
+## Classes that need to be a collection
+collection_classes = ["drone", "logs", "message","order", "status", "datastream"]
+
+## Classes that need to be shown at Entrypoint
+entrypoint_classes = ["drone", "logs", "message", "order", "status", "datastream"]
