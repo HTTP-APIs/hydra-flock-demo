@@ -1,0 +1,247 @@
+{
+    "@context": {
+        "ApiDocumentation": "hydra:ApiDocumentation", 
+        "code": "hydra:statusCode", 
+        "domain": {
+            "@id": "rdfs:domain", 
+            "@type": "@id"
+        }, 
+        "expects": {
+            "@id": "hydra:expects", 
+            "@type": "@id"
+        }, 
+        "hydra": "http://www.w3.org/ns/hydra/core#", 
+        "label": "rdfs:label", 
+        "property": {
+            "@id": "hydra:property", 
+            "@type": "@id"
+        }, 
+        "range": {
+            "@id": "rdfs:range", 
+            "@type": "@id"
+        }, 
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#", 
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#", 
+        "readonly": "hydra:readonly", 
+        "supportedClass": "hydra:supportedClass", 
+        "supportedOperation": "hydra:supportedOperation", 
+        "supportedProperty": "hydra:supportedProperty", 
+        "title": "hydra:title", 
+        "vocab": "localhost/api/vocab#"
+    }, 
+    "@id": "http://hydrus.com/droneapi/vocab", 
+    "@type": "ApiDocumentation", 
+    "description": "API Documentation for the drone side system", 
+    "entrypoint": "/droneapi/", 
+    "possibleStatus": [], 
+    "supportedClass": [
+        {
+            "@context": "http://hydrus.com/context/Status.jsonld", 
+            "@id": "http://hydrus.com/droneapi/vocab#Status", 
+            "@type": "hydra:Class", 
+            "description": "Class for drone status objects", 
+            "subClassOf": "null", 
+            "supportedOperation": [], 
+            "supportedProperty": [
+                {
+                    "@type": "SupportedProperty", 
+                    "property": "http://auto.schema.org/speed", 
+                    "readable": "true", 
+                    "required": "false", 
+                    "title": "Speed", 
+                    "writeable": "false"
+                }, 
+                {
+                    "@type": "SupportedProperty", 
+                    "property": "http://schema.org/geo", 
+                    "readable": "true", 
+                    "required": "false", 
+                    "title": "Position", 
+                    "writeable": "false"
+                }, 
+                {
+                    "@type": "SupportedProperty", 
+                    "property": "http://schema.org/fuelCapacity", 
+                    "readable": "true", 
+                    "required": "false", 
+                    "title": "Battery", 
+                    "writeable": "true"
+                }, 
+                {
+                    "@type": "SupportedProperty", 
+                    "property": "http://schema.org/device", 
+                    "readable": "true", 
+                    "required": "false", 
+                    "title": "Sensor", 
+                    "writeable": "true"
+                }, 
+                {
+                    "@type": "SupportedProperty", 
+                    "property": "http://schema.org/model", 
+                    "readable": "true", 
+                    "required": "false", 
+                    "title": "Model", 
+                    "writeable": "true"
+                }, 
+                {
+                    "@type": "SupportedProperty", 
+                    "property": "https://schema.org/status", 
+                    "readable": "true", 
+                    "required": "false", 
+                    "title": "SensorStatus", 
+                    "writeable": "false"
+                }
+            ], 
+            "title": "Status"
+        }, 
+        {
+            "@context": "http://hydrus.com/context/Drone.jsonld", 
+            "@id": "http://hydrus.com/droneapi/vocab#Drone", 
+            "@type": "hydra:Class", 
+            "description": "Class for a drone", 
+            "subClassOf": "null", 
+            "supportedOperation": [
+                {
+                    "@id": "/droneapi/issue_order", 
+                    "@type": "hydra:Operation", 
+                    "expects": "vocab: Status", 
+                    "method": "POST", 
+                    "possibleStatus": [
+                        {
+                            "code": 200, 
+                            "description": "Status Changed"
+                        }
+                    ], 
+                    "returns": "null", 
+                    "title": "ChangeStatus"
+                }, 
+                {
+                    "@id": "/droneapi/get_status", 
+                    "@type": "hydra:Operation", 
+                    "expects": "null", 
+                    "method": "GET", 
+                    "possibleStatus": [
+                        {
+                            "code": 200, 
+                            "description": "Status Returned"
+                        }
+                    ], 
+                    "returns": "vocab: Status", 
+                    "title": "GetStatus"
+                }
+            ], 
+            "supportedProperty": [
+                {
+                    "@type": "SupportedProperty", 
+                    "property": "vocab:Status", 
+                    "readable": "true", 
+                    "required": "false", 
+                    "title": "DroneStatus", 
+                    "writeable": "false"
+                }
+            ], 
+            "title": "Drone"
+        }, 
+        {
+            "@id": "http://www.w3.org/ns/hydra/core#Collection", 
+            "@type": "hydra:Class", 
+            "hydra:description": "null", 
+            "hydra:title": "Collection", 
+            "supportedOperation": [], 
+            "supportedProperty": [
+                {
+                    "hydra:description": "The members of this collection.", 
+                    "hydra:title": "members", 
+                    "property": "http://www.w3.org/ns/hydra/core#member", 
+                    "readonly": "false", 
+                    "required": "null", 
+                    "writeonly": "false"
+                }
+            ]
+        }, 
+        {
+            "@id": "http://www.w3.org/ns/hydra/core#Resource", 
+            "@type": "hydra:Class", 
+            "hydra:description": "null", 
+            "hydra:title": "Resource", 
+            "supportedOperation": [], 
+            "supportedProperty": []
+        }, 
+        {
+            "@id": "vocab:EntryPoint", 
+            "@type": "hydra:Class", 
+            "description": "The main entry point or homepage of the API.", 
+            "label": "EntryPoint", 
+            "subClassOf": null, 
+            "supportedOperation": [
+                {
+                    "@id": "_:entry_point", 
+                    "@type": "hydra:Operation", 
+                    "description": null, 
+                    "expects": null, 
+                    "label": "The APIs main entry point.", 
+                    "method": "GET", 
+                    "returns": "vocab:EntryPoint", 
+                    "statusCodes": []
+                }
+            ], 
+            "supportedProperty": [
+                {
+                    "hydra:description": "The Status collection", 
+                    "hydra:title": "status", 
+                    "property": {
+                        "@id": "vocab:EntryPoint/Status", 
+                        "@type": "hydra:Link", 
+                        "description": "The Status collection", 
+                        "domain": "vocab:EntryPoint", 
+                        "label": "Status", 
+                        "range": "vocab:StatusCollection", 
+                        "supportedOperation": [
+                            {
+                                "@id": "_:status_collection_retrieve", 
+                                "@type": "hydra:Operation", 
+                                "description": null, 
+                                "expects": null, 
+                                "label": "Retrieves all Status entities", 
+                                "method": "GET", 
+                                "returns": "vocab:StatusCollection", 
+                                "statusCodes": []
+                            }
+                        ]
+                    }, 
+                    "readonly": true, 
+                    "required": null, 
+                    "writeonly": false
+                }, 
+                {
+                    "hydra:description": "The Drone collection", 
+                    "hydra:title": "drone", 
+                    "property": {
+                        "@id": "vocab:EntryPoint/Drone", 
+                        "@type": "hydra:Link", 
+                        "description": "The Drone collection", 
+                        "domain": "vocab:EntryPoint", 
+                        "label": "Drone", 
+                        "range": "vocab:DroneCollection", 
+                        "supportedOperation": [
+                            {
+                                "@id": "_:drone_collection_retrieve", 
+                                "@type": "hydra:Operation", 
+                                "description": null, 
+                                "expects": null, 
+                                "label": "Retrieves all Drone entities", 
+                                "method": "GET", 
+                                "returns": "vocab:DroneCollection", 
+                                "statusCodes": []
+                            }
+                        ]
+                    }, 
+                    "readonly": true, 
+                    "required": null, 
+                    "writeonly": false
+                }
+            ]
+        }
+    ], 
+    "title": "API Doc for the drone side API"
+}

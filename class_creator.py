@@ -2,6 +2,7 @@
 
 from api_docs.server_doc import server_doc
 from api_docs.drone_doc import drone_doc
+import pdb
 
 
 def create_setter(prop):
@@ -18,6 +19,7 @@ def create_getter(prop):
     template = """def get_%s(self):
     return self.%s""" % (prop["title"], prop["title"])
     name = "get_%s" % prop["title"]
+    pdb.set_trace()
     exec(template)
     return eval(name), name
 
