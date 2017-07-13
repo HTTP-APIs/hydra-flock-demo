@@ -1,6 +1,7 @@
 """API Doc generator for the drone side API."""
 
-from doc_writer import HydraDoc, HydraClass, HydraProp, HydraOp
+from doc_writer import HydraDoc, HydraClass, HydraClassProp, HydraClassOp
+import json
 
 
 def drone_doc(API, BASE_URL):
@@ -9,48 +10,48 @@ def drone_doc(API, BASE_URL):
     api_doc = HydraDoc(API,
                        "API Doc for the drone side API",
                        "API Documentation for the drone side system",
-                       "/"+API+"/",
+                       API,
                        BASE_URL)
 
     # Status Class
-    status = HydraClass("Status", "Status", "Class for drone status objects", API, BASE_URL)
+    status = HydraClass("Status", "Status", "Class for drone status objects", endpoint=True)
 
     # Properties
-    status.add_supported_prop(HydraProp("http://auto.schema.org/speed", "Speed", True, False, False).get())
-    status.add_supported_prop(HydraProp("http://schema.org/geo", "Position", True, False, False).get())
-    status.add_supported_prop(HydraProp("http://schema.org/fuelCapacity", "Battery", True, True, False).get())
-    status.add_supported_prop(HydraProp("http://schema.org/device", "Sensor", True, True, False).get())
-    status.add_supported_prop(HydraProp("http://schema.org/model", "Model", True, True, False).get())
-    status.add_supported_prop(HydraProp("https://schema.org/status", "SensorStatus", True, False, False).get())
+    status.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "Speed", True, False, False))
+    status.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
+    status.add_supported_prop(HydraClassProp("http://schema.org/fuelCapacity", "Battery", True, True, False))
+    status.add_supported_prop(HydraClassProp("http://schema.org/device", "Sensor", True, True, False))
+    status.add_supported_prop(HydraClassProp("http://schema.org/model", "Model", True, True, False))
+    status.add_supported_prop(HydraClassProp("https://schema.org/status", "SensorStatus", True, False, False))
 
     # Drone Class
-    drone = HydraClass("Drone", "Drone", "Class for a drone", API, BASE_URL)
+    drone = HydraClass("Drone", "Drone", "Class for a drone", endpoint=True)
 
     # Properties
-    drone.add_supported_prop(HydraProp("vocab:Status", "DroneStatus", True, False, False).get())
+    drone.add_supported_prop(HydraClassProp("vocab:Status", "DroneStatus", True, False, False))
 
     # Operations
-    drone.add_supported_op(HydraOp("ChangeStatus",
-                                   "POST",
-                                   "vocab:Status",
-                                   None,
-                                   [{"code": 200, "description": "Status Changed"}]).get())
+    drone.add_supported_op(HydraClassOp("ChangeStatus",
+                                        "POST",
+                                        "vocab:Status",
+                                        None,
+                                        [{"code": 200, "description": "Status Changed"}]))
 
-    drone.add_supported_op(HydraOp("GetStatus",
-                                   "GET",
-                                   None,
-                                   "vocab:Status",
-                                   [{"code": 200, "description": "Status Returned"}]).get())
+    drone.add_supported_op(HydraClassOp("GetStatus",
+                                        "GET",
+                                        None,
+                                        "vocab:Status",
+                                        [{"code": 200, "description": "Status Returned"}]))
 
-    api_doc.add_supported_class(status.get(), collection=False)
-    api_doc.add_supported_class(drone.get(), collection=False)
+    api_doc.add_supported_class(status, collection=False)
+    api_doc.add_supported_class(drone, collection=False)
 
     api_doc.add_baseCollection()
     api_doc.add_baseResource()
     api_doc.gen_EntryPoint()
-    api_doc.gen_Collections()
     return api_doc
 
 
 if __name__ == "__main__":
-    print(drone_doc("droneapi", "http://hydrus.com/").to_json())
+    print(json.dumps(drone_doc("droneapi", "http://hydrus.com/").generate(), indent=4, sort_keys=True))
+    # print(drone_doc("droneapi", "http://hydrus.com/").generate())
