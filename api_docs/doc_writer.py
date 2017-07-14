@@ -2,17 +2,17 @@
 
 
 class HydraDoc():
-    """Template for a new API Doc."""
+    """Class for an API Doc."""
 
     def __init__(self, API, title, desc, entrypoint, base_url):
-        """Initialize the Hydra_APIDoc."""
+        """Initialize the APIDoc."""
         self.API = API
         self.title = title
         self.base_url = base_url
         self.context = Context(base_url + API)
-        self.parsed_classes = list()
+        self.parsed_classes = dict()
         self.other_classes = list()
-        self.collections = list()
+        self.collections = dict()
         self.status = list()
         self.entrypoint = HydraEntryPoint(entrypoint)
         self.desc = desc
@@ -20,10 +20,16 @@ class HydraDoc():
     def add_supported_class(self, class_, collection=False):
         """Add a new supportedClass."""
         # self.doc["supportedClass"].append(class_.get())
-        self.parsed_classes.append(class_)
+        self.parsed_classes[class_.title] = {
+            "context": Context(address=self.base_url+self.API, class_=class_),
+            "class": class_
+        }
         if collection:
             collection = HydraCollection(class_)
-            self.collections.append(collection)
+            self.collections[collection.name] = {
+                "context": Context(address=self.base_url+self.API, collection=collection),
+                "collection": collection
+            }
 
     def add_possible_status(self, status):
         """Add a new possibleStatus."""
@@ -47,15 +53,17 @@ class HydraDoc():
 
     def gen_EntryPoint(self):
         """Generate the EntryPoint for the Hydra Doc."""
-        for class_ in self.parsed_classes:
-            if class_.endpoint:
-                self.entrypoint.add_Class(class_)
-        for collection in self.collections:
-            self.entrypoint.add_Collection(collection)
         # pdb.set_trace()
+        for class_ in self.parsed_classes:
+            if self.parsed_classes[class_]["class"].endpoint:
+                self.entrypoint.add_Class(self.parsed_classes[class_]["class"])
+        for collection in self.collections:
+            self.entrypoint.add_Collection(self.collections[collection]["collection"])
 
     def generate(self):
         """Get the Hydra API Doc as a python dict."""
+        parsed_classes = [self.parsed_classes[key]["class"] for key in self.parsed_classes]
+        collections = [self.collections[key]["collection"] for key in self.collections]
         doc = {
             "@context": self.context.generate(),
             "@id": self.base_url + self.API + "/vocab",
@@ -63,7 +71,7 @@ class HydraDoc():
             "title": self.title,
             "description": self.desc,
             "entrypoint": self.entrypoint.url,
-            "supportedClass": [x.generate() for x in self.parsed_classes + self.other_classes + self.collections + [self.entrypoint]],
+            "supportedClass": [x.generate() for x in parsed_classes + self.other_classes + collections + [self.entrypoint]],
             "possibleStatus": [x.generate() for x in self.status]
         }
         return doc
@@ -74,7 +82,7 @@ class HydraClass():
 
     def __init__(self, id_, title, desc,  endpoint=False, sub_classof=None):
         """Initialize the Hydra_Class."""
-        self.id_ = id_
+        self.id_ = id_ if "http" in id_ else "vocab:"+id_
         self.title = title
         self.desc = desc
         self.parents = None
@@ -97,12 +105,13 @@ class HydraClass():
         class_ = {
             "@id": self.id_,
             "@type": "hydra:Class",
-            "subClassOf": self.parents,
             "title": self.title,
             "description": self.desc,
             "supportedProperty": [x.generate() for x in self.supportedProperty],
             "supportedOperation": [x.generate() for x in self.supportedOperation],
         }
+        if self.parents is not None:
+            class_["subClassOf"] = self.parents
         return class_
 
 
@@ -160,39 +169,39 @@ class HydraCollection():
     def __init__(self, class_):
         """Generate Collection for a given class."""
         self.class_ = class_
-        self.name = class_.title
+        self.name = class_.title + "Collection"
 
     def generate(self):
         """Get as a python dict."""
         collection = {
-            "@id": "vocab:%sCollection" % (self.name,),
+            "@id": "vocab:%s" % (self.name,),
             "@type": "hydra:Class",
             "subClassOf": "http://www.w3.org/ns/hydra/core#Collection",
-            "label": "%sCollection" % (self.name),
-            "description": "A collection of %s" % (self.name.lower()),
+            "label": "%s" % (self.name),
+            "description": "A collection of %s" % (self.class_.title.lower()),
             "supportedOperation": [
                 {
-                    "@id": "_:%s_create" % (self.name.lower()),
+                    "@id": "_:%s_create" % (self.class_.title.lower()),
                     "@type": "http://schema.org/AddAction",
                     "method": "POST",
                     "description": None,
-                    "expects": self.name,
-                    "returns": self.name,
+                    "expects": self.class_.title,
+                    "returns": self.class_.title,
                     "statusCodes": [
                         {
                             "code": 201,
-                            "description": "If the %s entity was created successfully." % (self.name,)
+                            "description": "If the %s entity was created successfully." % (self.class_.title)
                         }
                     ]
                 },
                 {
-                    "@id": "_:%s_collection_retrieve" % (self.name.lower(),),
+                    "@id": "_:%s_collection_retrieve" % (self.class_.title.lower()),
                     "@type": "hydra:Operation",
                     "method": "GET",
-                    "label": "Retrieves all %s entities" % (self.name,),
+                    "label": "Retrieves all %s entities" % (self.class_.title),
                     "description": None,
                     "expects": None,
-                    "returns": "vocab:%sCollection" % (self.name),
+                    "returns": "vocab:%s" % (self.name),
                     "statusCodes": [
                     ]
                 }
@@ -201,7 +210,7 @@ class HydraCollection():
                 {
                     "property": "http://www.w3.org/ns/hydra/core#member",
                     "hydra:title": "members",
-                    "hydra:description": "The %s" % (self.name.lower(),),
+                    "hydra:description": "The %s" % (self.class_.title.lower(),),
                     "required": None,
                     "readonly": False,
                     "writeonly": False
@@ -243,40 +252,71 @@ class HydraEntryPoint():
 class Context():
     """Class for JSON-LD context."""
 
-    def __init__(self, address, adders={}):
+    def __init__(self, address, adders={}, class_=None, collection=None):
         """Initialize context."""
         # NOTE: adders is a dictionary containing additional context elements to the base Hydra context
-        self.context = {
-            "hydra": "http://www.w3.org/ns/hydra/core#",
-            "property": {
-                "@type": "@id",
-                "@id": "hydra:property"
-            },
-            "supportedClass": "hydra:supportedClass",
-            "supportedProperty": "hydra:supportedProperty",
-            "supportedOperation": "hydra:supportedOperation",
-            "code": "hydra:statusCode",
-            "label": "rdfs:label",
-            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-            "vocab": address + "/vocab#",
-            # "vocab": "localhost/api/vocab#",
-            "domain": {
-                "@type": "@id",
-                "@id": "rdfs:domain"
-            },
-            "ApiDocumentation": "hydra:ApiDocumentation",
-            "range": {
-                "@type": "@id",
-                "@id": "rdfs:range"
-            },
-            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-            "title": "hydra:title",
-            "readonly": "hydra:readonly",
-            "expects": {
-                "@type": "@id",
-                "@id": "hydra:expects"
+        if class_ is not None:
+            self.context = {
+                "vocab": address + "/vocab#",
+                "hydra": "http://www.w3.org/ns/hydra/core#",
+                "members": "http://www.w3.org/ns/hydra/core#member",
+                "object": "http://schema.org/object",
             }
-        }
+            self.context[class_.title] = class_.id_
+            for prop in class_.supportedProperty:
+                self.context[prop.title] = prop.prop
+
+        elif collection is not None:
+            self.context = {
+                "vocab": address + "/vocab#",
+                "hydra": "http://www.w3.org/ns/hydra/core#",
+                "members": "http://www.w3.org/ns/hydra/core#member",
+            }
+            self.context[collection.name] = "vocab:"+collection.name
+            self.context[collection.class_.title] = collection.class_.id_
+
+        else:
+            self.context = {
+                "hydra": "http://www.w3.org/ns/hydra/core#",
+                "property": {
+                    "@type": "@id",
+                    "@id": "hydra:property"
+                },
+                "supportedClass": "hydra:supportedClass",
+                "supportedProperty": "hydra:supportedProperty",
+                "supportedOperation": "hydra:supportedOperation",
+                "code": "hydra:statusCode",
+                "label": "rdfs:label",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "vocab": address + "/vocab#",
+                # "vocab": "localhost/api/vocab#",
+                "domain": {
+                    "@type": "@id",
+                    "@id": "rdfs:domain"
+                },
+                "ApiDocumentation": "hydra:ApiDocumentation",
+                "range": {
+                    "@type": "@id",
+                    "@id": "rdfs:range"
+                },
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "title": "hydra:title",
+                "readonly": "hydra:readonly",
+                "expects": {
+                    "@type": "@id",
+                    "@id": "hydra:expects"
+                }
+            }
+
+    def createContext(self, object_):
+        """Create the context for the given object."""
+        if type(object_) is HydraClass:
+            self.add(object_.title, object_.id)
+            for prop in object_.supportedProperty:
+                self.add(prop.title, self.prop)
+        if type(object_) is HydraCollection:
+            self.add(object_.name, "vocab:"+object_.name)
+            self.add(object_.class_.title, object_.class_.id)
 
     def generate(self):
         """Get as a python dict."""

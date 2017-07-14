@@ -29,7 +29,7 @@ def drone_doc(API, BASE_URL):
 
     # Properties
     drone.add_supported_prop(HydraClassProp("vocab:Status", "DroneStatus", True, False, False))
-
+    drone.add_supported_prop(HydraClassProp("https://schema.org/name", "name", True, False, False))
     # Operations
     drone.add_supported_op(HydraClassOp("ChangeStatus",
                                         "POST",
