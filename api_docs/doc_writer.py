@@ -227,7 +227,7 @@ class HydraEntryPoint():
     def __init__(self, url):
         """Initialize the Entrypoint."""
         self.url = url
-        self.entrypoint = HydraClass("vocab:EntryPoint", "EntryPoint", "The main entry point or homepage of the API.")
+        self.entrypoint = HydraClass("EntryPoint", "EntryPoint", "The main entry point or homepage of the API.")
         self.entrypoint.add_supported_op(EntryPointOp("_:entry_point", "GET", "The APIs main entry point.", None, None, "vocab:EntryPoint"))
 
     def get(self):

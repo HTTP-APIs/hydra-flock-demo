@@ -24,32 +24,61 @@ def server_doc(API, BASE_URL):
     status.add_supported_prop(HydraClassProp("https://schema.org/status", "SensorStatus", True, False, False))
 
     # Drone Class
-    drone = HydraClass("Drone", "Drone", "Class for a drone", endpoint=True)
+    drone = HydraClass("Drone", "Drone", "Class for a drone")
     # Properties
     drone.add_supported_prop(HydraClassProp("vocab:Status", "DroneStatus", True, False, False))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/name", "name", True, False, False))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/model", "model", True, False, False))
+    drone.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "MaxSpeed", True, False, False))
     # Operations
-    drone.add_supported_op(HydraClassOp("ChangeStatus",
-                                        "POST",
+    drone.add_supported_op(HydraClassOp("SubmitStatus",
+                                        "PUT",
                                         "vocab:Status",
                                         None,
-                                        [{"code": 200, "description": "Status Changed"}]))
-    drone.add_supported_op(HydraClassOp("GetStatus",
+                                        [{"code": 200, "description": "Drone Status updated"}]))
+    drone.add_supported_op(HydraClassOp("GetDrone",
                                         "GET",
                                         None,
-                                        "vocab:Status",
-                                        [{"code": 200, "description": "Status Returned"}]))
+                                        "vocab:Drone",
+                                        [{"code": 200, "description": "Drone Returned"}]))
+
+    command = HydraClass("Command", "Command", "Class for drone commands")
+    command.add_supported_prop(HydraClassProp("http://schema.org/UpdateAction", "Update", False, True, False))
+    command.add_supported_prop(HydraClassProp("vocab:Status", "Status", False, False, False))
 
     log = HydraClass("LogEntry", "LogEntry", "Class for a log entry")
     # Subject
-    log.add_supported_prop(HydraClassProp("vocab:Drone", "Drone", True, True, True))
+    log.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", True, True, False))
     # Predicate
-    log.add_supported_prop(HydraClassProp("http://schema.org/UpdateAction", "Update", True, True, False))
-    log.add_supported_prop(HydraClassProp("http://schema.org/ReplyAction", "Get", True, True, False))
+    log.add_supported_prop(HydraClassProp("http://schema.org/UpdateAction", "Update", False, True, False))
+    log.add_supported_prop(HydraClassProp("http://schema.org/ReplyAction", "Get", False, True, False))
+    log.add_supported_prop(HydraClassProp("http://schema.org/SendAction", "Send", False, True, False))
     # Objects
-    log.add_supported_prop(HydraClassProp("vocab:Status", "Status", True, True, True))
+    log.add_supported_prop(HydraClassProp("vocab:Status", "Status", False, True, False))
+    log.add_supported_prop(HydraClassProp("vocab:Data", "Data", False, True, False))
+    log.add_supported_prop(HydraClassProp("vocab:Command", "Command", False, True, False))
+    log.add_supported_op(HydraClassOp("GetLog",
+                                      "GET",
+                                      "null",
+                                      "voab:LogEntry",
+                                      [{"code": 404, "description": "Log entry not found"},
+                                       {"code": 200, "description": "Log entry returned"}]))
 
     data = HydraClass("Data", "Data", "Class for a data entry")
-    data.add_supported_prop(HydraClassProp("http://schema.org/QuantitativeValue", "Temperature", True, True, False))
+    data.add_supported_prop(HydraClassProp("http://schema.org/QuantitativeValue", "Temperature", True, False, False))
+    data.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", True, False, False))
+    data.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
+    data.add_supported_op(HydraClassOp("ReadData",
+                                       "GET",
+                                       "null",
+                                       "vocab:Data",
+                                       [{"code": 404, "description": "Data not found"},
+                                        {"code": 200, "description": "Data returned"}]))
+    data.add_supported_op(HydraClassOp("SubmitData",
+                                       "POST",
+                                       "vocab:Data",
+                                       "null",
+                                       [{"code": 201, "description": "Data added"}]))
 
     area = HydraClass("Area", "Area", "Class for Area of Interest of the server", endpoint=True)
     # Using two positions to have a bounding box
@@ -65,13 +94,19 @@ def server_doc(API, BASE_URL):
                                        "GET",
                                        "null",
                                        "http://hydrus.com/Area",
-                                       [{"code": 404, "description": "Area of not found"}]))
+                                       [{"code": 404, "description": "Area of not found"},
+                                        {"code": 200, "description": "Area of returned"}]))
+
+    message = HydraClass("Message", "Message", "Class for messages received by the GUI interface")
+    message.add_supported_prop(HydraClassProp("http://schema.org/Text", "MessageString", True, True, False))
 
     api_doc.add_supported_class(drone, collection=True)
-    api_doc.add_supported_class(status)
+    api_doc.add_supported_class(status, collection=False)
     api_doc.add_supported_class(data, collection=True)
     api_doc.add_supported_class(log, collection=True)
-    api_doc.add_supported_class(area)
+    api_doc.add_supported_class(area, collection=False)
+    api_doc.add_supported_class(command, collection=False)
+    api_doc.add_supported_class(message, collection=True)
 
     api_doc.add_baseResource()
     api_doc.add_baseCollection()

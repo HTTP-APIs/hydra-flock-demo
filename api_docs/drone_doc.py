@@ -38,10 +38,128 @@ drone_doc = {
     "possibleStatus": [],
     "supportedClass": [
         {
-            "@id": "Status",
+            "@id": "vocab:Data",
+            "@type": "hydra:Class",
+            "description": "Class for a data entry",
+            "supportedOperation": [
+                {
+                    "@type": "hydra:Operation",
+                    "expects": "null",
+                    "method": "GET",
+                    "possibleStatus": [
+                        {
+                            "code": 404,
+                            "description": "Data not found"
+                        },
+                        {
+                            "code": 200,
+                            "description": "Data returned"
+                        }
+                    ],
+                    "returns": "vocab:Data",
+                    "title": "GetData"
+                }
+            ],
+            "supportedProperty": [
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/QuantitativeValue",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Temperature",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/identifier",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "DroneID",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/geo",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Position",
+                    "writeable": "false"
+                }
+            ],
+            "title": "Data"
+        },
+        {
+            "@id": "vocab:Drone",
+            "@type": "hydra:Class",
+            "description": "Class for a drone",
+            "supportedOperation": [
+                {
+                    "@type": "hydra:Operation",
+                    "expects": "null",
+                    "method": "GET",
+                    "possibleStatus": [
+                        {
+                            "code": 200,
+                            "description": "Status Returned"
+                        }
+                    ],
+                    "returns": "vocab:Status",
+                    "title": "GetStatus"
+                },
+                {
+                    "@type": "hydra:Operation",
+                    "expects": "vocab:Command",
+                    "method": "POST",
+                    "possibleStatus": [
+                        {
+                            "code": 200,
+                            "description": "Command issued"
+                        }
+                    ],
+                    "returns": "null",
+                    "title": "IssueCommand"
+                }
+            ],
+            "supportedProperty": [
+                {
+                    "@type": "SupportedProperty",
+                    "property": "vocab:Status",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "DroneStatus",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/name",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "name",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/model",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "model",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://auto.schema.org/speed",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "MaxSpeed",
+                    "writeable": "false"
+                }
+            ],
+            "title": "Drone"
+        },
+        {
+            "@id": "vocab:Status",
             "@type": "hydra:Class",
             "description": "Class for drone status objects",
-            "subClassOf": "null",
             "supportedOperation": [],
             "supportedProperty": [
                 {
@@ -96,55 +214,9 @@ drone_doc = {
             "title": "Status"
         },
         {
-            "@id": "Drone",
-            "@type": "hydra:Class",
-            "description": "Class for a drone",
-            "subClassOf": "null",
-            "supportedOperation": [
-                {
-                    "@type": "hydra:Operation",
-                    "expects": "vocab:Status",
-                    "method": "POST",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Status Changed"
-                        }
-                    ],
-                    "returns": "null",
-                    "title": "ChangeStatus"
-                },
-                {
-                    "@type": "hydra:Operation",
-                    "expects": "null",
-                    "method": "GET",
-                    "possibleStatus": [
-                        {
-                            "code": 200,
-                            "description": "Status Returned"
-                        }
-                    ],
-                    "returns": "vocab:Status",
-                    "title": "GetStatus"
-                }
-            ],
-            "supportedProperty": [
-                {
-                    "@type": "SupportedProperty",
-                    "property": "vocab:Status",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "DroneStatus",
-                    "writeable": "false"
-                }
-            ],
-            "title": "Drone"
-        },
-        {
             "@id": "http://www.w3.org/ns/hydra/core#Collection",
             "@type": "hydra:Class",
             "description": "null",
-            "subClassOf": "null",
             "supportedOperation": [],
             "supportedProperty": [
                 {
@@ -162,7 +234,6 @@ drone_doc = {
             "@id": "http://www.w3.org/ns/hydra/core#Resource",
             "@type": "hydra:Class",
             "description": "null",
-            "subClassOf": "null",
             "supportedOperation": [],
             "supportedProperty": [],
             "title": "Resource"
@@ -171,7 +242,6 @@ drone_doc = {
             "@id": "vocab:EntryPoint",
             "@type": "hydra:Class",
             "description": "The main entry point or homepage of the API.",
-            "subClassOf": "null",
             "supportedOperation": [
                 {
                     "@id": "_:entry_point",
@@ -186,16 +256,36 @@ drone_doc = {
             ],
             "supportedProperty": [
                 {
-                    "hydra:description": "The Status Class",
-                    "hydra:title": "status",
+                    "hydra:description": "The Data Class",
+                    "hydra:title": "data",
                     "property": {
-                        "@id": "vocab:EntryPoint/Status",
+                        "@id": "vocab:EntryPoint/Data",
                         "@type": "hydra:Link",
-                        "description": "Class for drone status objects",
+                        "description": "Class for a data entry",
                         "domain": "vocab:EntryPoint",
-                        "label": "Status",
-                        "range": "vocab:StatusCollection",
-                        "supportedOperation": []
+                        "label": "Data",
+                        "range": "vocab:DataCollection",
+                        "supportedOperation": [
+                            {
+                                "@id": "_:getdata",
+                                "@type": "hydra:Operation",
+                                "description": "null",
+                                "expects": "null",
+                                "label": "GetData",
+                                "method": "GET",
+                                "returns": "vocab:Data",
+                                "statusCodes": [
+                                    {
+                                        "code": 404,
+                                        "description": "Data not found"
+                                    },
+                                    {
+                                        "code": 200,
+                                        "description": "Data returned"
+                                    }
+                                ]
+                            }
+                        ]
                     },
                     "readonly": "true",
                     "required": "null",
@@ -213,21 +303,6 @@ drone_doc = {
                         "range": "vocab:DroneCollection",
                         "supportedOperation": [
                             {
-                                "@id": "_:changestatus",
-                                "@type": "hydra:Operation",
-                                "description": "null",
-                                "expects": "vocab:Status",
-                                "label": "ChangeStatus",
-                                "method": "POST",
-                                "returns": "null",
-                                "statusCodes": [
-                                    {
-                                        "code": 200,
-                                        "description": "Status Changed"
-                                    }
-                                ]
-                            },
-                            {
                                 "@id": "_:getstatus",
                                 "@type": "hydra:Operation",
                                 "description": "null",
@@ -239,6 +314,21 @@ drone_doc = {
                                     {
                                         "code": 200,
                                         "description": "Status Returned"
+                                    }
+                                ]
+                            },
+                            {
+                                "@id": "_:issuecommand",
+                                "@type": "hydra:Operation",
+                                "description": "null",
+                                "expects": "vocab:Command",
+                                "label": "IssueCommand",
+                                "method": "POST",
+                                "returns": "null",
+                                "statusCodes": [
+                                    {
+                                        "code": 200,
+                                        "description": "Command issued"
                                     }
                                 ]
                             }

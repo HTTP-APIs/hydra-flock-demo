@@ -14,7 +14,7 @@ def drone_doc(API, BASE_URL):
                        BASE_URL)
 
     # Status Class
-    status = HydraClass("Status", "Status", "Class for drone status objects", endpoint=True)
+    status = HydraClass("Status", "Status", "Class for drone status objects")
 
     # Properties
     status.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "Speed", True, False, False))
@@ -26,25 +26,37 @@ def drone_doc(API, BASE_URL):
 
     # Drone Class
     drone = HydraClass("Drone", "Drone", "Class for a drone", endpoint=True)
-
     # Properties
     drone.add_supported_prop(HydraClassProp("vocab:Status", "DroneStatus", True, False, False))
-    drone.add_supported_prop(HydraClassProp("https://schema.org/name", "name", True, False, False))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/name", "name", True, False, False))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/model", "model", True, False, False))
+    drone.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "MaxSpeed", True, False, False))
     # Operations
-    drone.add_supported_op(HydraClassOp("ChangeStatus",
-                                        "POST",
-                                        "vocab:Status",
-                                        None,
-                                        [{"code": 200, "description": "Status Changed"}]))
-
     drone.add_supported_op(HydraClassOp("GetStatus",
                                         "GET",
                                         None,
                                         "vocab:Status",
                                         [{"code": 200, "description": "Status Returned"}]))
+    drone.add_supported_op(HydraClassOp("IssueCommand",
+                                        "POST",
+                                        "vocab:Command",
+                                        None,
+                                        [{"code": 200, "description": "Command issued"}]))
+
+    data = HydraClass("Data", "Data", "Class for a data entry", endpoint=True)
+    data.add_supported_prop(HydraClassProp("http://schema.org/QuantitativeValue", "Temperature", True, False, False))
+    data.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", True, False, False))
+    data.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
+    data.add_supported_op(HydraClassOp("GetData",
+                                       "GET",
+                                       "null",
+                                       "vocab:Data",
+                                       [{"code": 404, "description": "Data not found"},
+                                        {"code": 200, "description": "Data returned"}]))
 
     api_doc.add_supported_class(status, collection=False)
     api_doc.add_supported_class(drone, collection=False)
+    api_doc.add_supported_class(data, collection=False)
 
     api_doc.add_baseCollection()
     api_doc.add_baseResource()
