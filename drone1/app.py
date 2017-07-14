@@ -48,7 +48,7 @@ def struct_object(object_, type_):
         return object_
     else:
         obj_temp = {
-            "name": None,
+            "name": "NA",
             "@type": "",
             "object": {
             }}
@@ -178,12 +178,12 @@ class Index(Resource):
 api.add_resource(Index, "/api", endpoint="api")
 
 
-class Info(Resource):
-    """Handles all operations(GET, PUT) on Info."""
+class Drone(Resource):
+    """Handles all operations(GET, PUT) on Drone."""
 
     def get(self,):
         """GET object with id = id_ from the database."""
-        response = crud.get(1, "info")
+        response = crud.get(1, "drone")
         if "object" in response:
             # print(response)
             return set_response_headers(jsonify(hydrafy(response)))
@@ -192,21 +192,21 @@ class Info(Resource):
             return set_response_headers(jsonify(response), status_code=status_code)
 
 # Needs to be changed manually
-api.add_resource(Info, "/api/info", endpoint="info")
-api.add_resource(Info, "/api/info/1", endpoint="info_data")
+api.add_resource(Drone, "/api/drone", endpoint="drone")
+api.add_resource(Drone, "/api/drone/1", endpoint="drone_data")
 
-def update_info(identifier, speed, destination):
-    info = crud.get(1, "info")
-    if( info["object"]["Identifier"] == identifier):
-        info["object"]["Speed"] = speed
-        info["object"]["Destination"] = destination
-        return crud.update(1,"info", info)
+def update_drone(identifier, speed, destination):
+    drone = crud.get(1, "drone")
+    if( drone["object"]["Identifier"] == identifier):
+        drone["object"]["Speed"] = speed
+        drone["object"]["Destination"] = destination
+        return crud.update(1,"drone", drone)
     else:
         return {400: "Unknown identifier"}
 
 
 class Order(Resource):
-    """Handles all operations(GET, PUT) on Info."""
+    """Handles all operations(GET, PUT) on Order."""
 
     def get(self, id_):
         """GET object with id = id_ from the database."""
@@ -219,7 +219,7 @@ class Order(Resource):
             return set_response_headers(jsonify(response), status_code=status_code)
 
 
-api.add_resource(Info, "/api/order/<string:order_id>", endpoint="order")
+api.add_resource(Order, "/api/order/<string:order_id>", endpoint="order")
 
 class ItemCollection(Resource):
     """Handle operation related to ItemCollection (a collection of items)."""
@@ -242,8 +242,8 @@ class ItemCollection(Resource):
 
 
         if validObject(object_):
-            # Updating info before submitting order
-            status = update_info(object_["object"]["Identifier"], object_["object"]["Speed"], object_["object"]["Destination"])
+            # Updating drone before submitting order
+            status = update_drone(object_["object"]["Identifier"], object_["object"]["Speed"], object_["object"]["Destination"])
             if 200 in status.keys():
                 response = crud.insert(object_=object_)
 

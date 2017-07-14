@@ -60,9 +60,11 @@ def get(id_, type_, session=session):
             properties.id == data.predicate).one().name
         terminal = session.query(Terminal).filter(
             Terminal.id == data.object_).one()
-        object_template["object"][prop_name] = terminal.value + \
-            " " + terminal.unit
-
+        try:
+            object_template["object"][prop_name] = terminal.value
+        except:
+            ## If terminal is none
+            object_template["object"][prop_name] = ""
     object_template["name"] = instance.name
     object_template["@id"] = "/api/" + type_ + "/" + str(id_)
     object_template["@type"] = rdf_class.name
@@ -158,7 +160,7 @@ def insert(object_, id_=None, session=session):
             # For insertion in IIT
             else:
                 terminal = Terminal(
-                    value=object_["object"][prop_name], unit="unit")
+                    value=object_["object"][prop_name])
                 session.add(terminal)
                 session.flush()     # Assigns ID without committing
 
@@ -218,14 +220,16 @@ def update(id_, type_, object_, session=session):
     """Update an object properties based on the given object [PUT]."""
     # Keep the object as fail safe
     instance = get(id_, type_, session)
+    print(instance)
     if "object" in instance:
+
         instance.pop("@id")
         # Try deleteing the object
         delete_status = delete(id_=id_, type_=type_, session=session)
         if 200 in delete_status:
             # Try inserting the new data
             insert_status = insert(object_=object_, id_=id_, session=session)
-            if 200 in insert_status:
+            if 201 in insert_status:
                 return {200: "Object with ID : %s successfully updated!" % (id_)}
             else:
                 return insert_status
@@ -266,27 +270,11 @@ def get_collection(type_, session=session):
             collection_template["members"].append(object_template)
     return collection_template
 
-    object__ = {
-        "name": "12W communication",
-        "@type": "Spacecraft_Communication",
-        "object": {
-            "hasMass": 9000,
-            "hasMonetaryValue": 4,
-            "hasPower": -61,
-            "hasVolume": 99,
-            "maxWorkingTemperature": 63,
-            "minWorkingTemperature": -26
-        }
-    }
 
-
-object_2 = {'name': 'Not defined :p', '@type': 'Order', 'object': {'Speed': '2334', 'Destination': 'india'},
-            '@context': {'Speed': 'http://auto.schema.org/speed', 'Destination': 'http://schema.org/geo'}}
-
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # print(update(6, object__))
-    print(insert(object_2))
+    # print(insert(object_2))
     # print(delete(1))
     # print(update(4, object__))
-    # print(get(1, "Spacecraft_Communication"))
+    # print(get(1, "info"))
     # print(get_collection("Spacecraft_Communication"))

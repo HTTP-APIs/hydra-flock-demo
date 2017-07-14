@@ -1,102 +1,111 @@
 classes_ = [
-    # 1. Drone Class
-    {
-        "@id": "http://hydrus.com/drone",
-        "@type": "hydra:Class",
-        "title": "drone",
-        "description": "Contains specifications related to each drone.",
-        "supportedOperation": [
-            {
-                 "statusCodes": [
-                     {
-                         "code": 201,
-                         "description": "New drone successfully created."
-                     }
-                 ],
-                "@type": "http://schema.org/AddAction",
-                "returns": "http://hydrus.com/drone",
-                "label": "Add a new drone to the Central Server",
-                "method": "POST",
-                "@id": "_:drone_create",
-                "description": None,
-                "expects": "http://hydrus.com/drone"
-            },
-            {
-                "statusCodes": [
-                    {
-                        "code": 404,
-                        "description": "If no orders were found."
-                    }
-                ],
-                "@type": "hydra:Operation",
-                "returns": "http://hydrus.com/drone",
-                "label": "Retrieves all drones from the central server.",
-                "method": "GET",
-                "@id": "_:drone_retrieve",
-                "description": None,
-                "expects": None
-            }
-        ],
-        "supportedProperty": [
-            {"@type": "SupportedProperty",
-             "property": "http://schema.org/identifier",
-             "title": "Identifier",
-             "hydra:description": "Identifier for drone to check if the recieved order was for the same drone.",
-             "required": True,
-             "readonly": False,
-             "writeonly": False
-             },
+        # 1. Drone Class
+        {
+            "@id": "http://hydrus.com/drone",
+            "@type": "hydra:Class",
+            "title": "drone",
+            "description": "Contains specifications related to drones.",
+            "supportedOperation": [
+                {
+                    "statusCodes": [
+                        {
+                            "code": 200,
+                            "description": "Drone successfully created"
+                        }
+                    ],
+                    "@type": "http://schema.org/AddAction",
+                    "returns": "http://hydrus.com/drone",
+                    "label": "Create a new drone entity in the database.",
+                    "method": "POST",
+                    "@id": "_:drone_create",
+                    "description": None,
+                    "expects": "http://hydrus.com/drone"
+                },
+                {
+                    "statusCodes": [],
+                    "@type": "hydra:Operation",
+                    "returns": "http://hydrus.com/drone",
+                    "label": "Retrieves all drone details.",
+                    "method": "GET",
+                    "@id": "_:drone_retrieve",
+                    "description": None,
+                    "expects": None
+                }
+            ],
+            "supportedProperty": [
+                {"@type": "SupportedProperty",
+                 "property": "http://schema.org/identifier",
+                 "title": "Identifier",
+                 "hydra:description": "Id with which the drone is stored at the central server ( Initially None).",
+                 "required": True,
+                 "readonly": False,
+                 "writeonly": False
+                 },
 
-            {
-                "@type": "SupportedProperty",
-                "property": "http://auto.schema.org/speed",
-                "readable": True,
-                "required": True,
-                "title": "Speed",
-                "writeable": True
-            },
-            {
-                "@type": "SupportedProperty",
-                "property": "http://schema.org/geo",
-                "readable": True,
-                "required": True,
-                "title": "Position",
-                "writeable": True
-            },
-            {
-                "@type": "SupportedProperty",
-                "property": "http://schema.org/fuelCapacity",
-                "readable": True,
-                "required": True,
-                "title": "Battery",
-                "writeable": True
-            },
-            {
-                "@type": "SupportedProperty",
-                "property": "http://schema.org/device",
-                "readable": True,
-                "required": True,
-                "title": "Sensor",
-                "writeable": False
-            },
-            {
-                "@type": "SupportedProperty",
-                "property": "http://schema.org/model",
-                "readable": True,
-                "required": True,
-                "title": "Model",
-                "writeable": False
-            },
-            {
-                "@type": "SupportedProperty",
-                "property": "https://schema.org/status",
-                "readable": True,
-                "required": True,
-                "title": "Status",
-                "writeable": True
-            }
-        ]
-    },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://auto.schema.org/speed",
+                    "hydra:description":"Current speed of the drone",
+                    "readable": True,
+                    "required": True,
+                    "title": "Speed",
+                    "writeable": True
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/geo",
+                    "readable": True,
+                    "required": True,
+                    "hydra:description":"Current coordinates of the drone",
+                    "title": "Position",
+                    "writeable": True
+                },
+                {"@type": "SupportedProperty",
+                 "property": "http://schema.org/geo",
+                 "title": "Destination",
+                 "hydra:description": "Coordinates of the new destination",
+                 "required": True,
+                 "readonly": False,
+                 "writeonly": False
+                 },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/fuelCapacity",
+                    "readable": True,
+                    "required": True,
+                    "hydra:description": "Battery status of the drone.",
+                    "title": "Battery",
+                    "writeable": True
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/device",
+                    "readable": True,
+                    "required": True,
+                    "title": "Sensor",
+                    "hydra:description": "Sensors available in the drone.",
+                    "writeable": False
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/name",
+                    "readable": True,
+                    "required": True,
+                    "title": "Name",
+                    "hydra:description":"Name of the drone ( will be used as the network alias)",
+                    "writeable": False
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "https://schema.org/status",
+                    "readable": True,
+                    "required": True,
+                    "title": "Status",
+                    "hydra:description":"Current status of the drone.",
+                    "writeable": True
+                }
+            ]
+        },
 
     # 2. Logs Class
     {
@@ -388,7 +397,7 @@ classes_ = [
              "writeonly": False
              },
             {"@type": "SupportedProperty",
-             "property": "schema.org/QuantitativeValue",
+             "property": "http://schema.org/QuantitativeValue",
              "title": "Temperature",
              "hydra:description": "Temperature of area can be [ Normal | Abnormal | Critical]",
              "required": True,
@@ -398,7 +407,7 @@ classes_ = [
 
             {"@type": "SupportedProperty",
              "property": "http://schema.org/identifier",
-             "title": "Drone Identifier",
+             "title": "Identifier",
              "hydra:description": "Identifier for drone to check if the recieved datastream was for the same drone.",
              "required": True,
              "readonly": False,

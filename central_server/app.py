@@ -20,7 +20,7 @@ global SERVER_URL, SEMANTIC_REF_NAME, SEMANTIC_REF_URL, CLASSES_, ENTRYPOINT_CLA
 SERVER_URL = os.environ.get("HYDRUS_SERVER_URL", "localhost/")
 # TEMP ( will change later)
 SEMANTIC_REF_NAME = "drone"
-SEMANTIC_REF_URL = "http://drone:8081/api/vocab#"
+SEMANTIC_REF_URL = "http://drone/api/vocab#"
 CLASSES_ = classes_
 ENTRYPOINT_CLASSES = entrypoint_classes
 COLLECTION_CLASSES = collection_classes
@@ -49,7 +49,7 @@ def struct_object(object_, type_):
         return object_
     else:
         obj_temp = {
-            "name": None,
+            "name": "NA",
             "@type": "",
             "object": {
             }}
@@ -251,6 +251,7 @@ class ItemCollection(Resource):
 
         if validObject(object_):
             response = crud.insert(object_=object_)
+            print(response)
 
             object_id = response[list(response.keys())[0]].split(" ")[3]
             headers_ = [{"Location":SERVER_URL+"api/"+type_+ "/"+ object_id},]

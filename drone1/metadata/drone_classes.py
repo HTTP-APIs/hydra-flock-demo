@@ -67,18 +67,18 @@ classes_ = [
     },
     # 1. Drone Class
     {
-        "@id": "http://hydrus.com/info",
+        "@id": "http://hydrus.com/drone",
         "@type": "hydra:Class",
-        "title": "info",
+        "title": "drone",
         "description": "Contains specifications related to the drone itself.",
         "supportedOperation": [
             {
                 "statusCodes": [],
                 "@type": "hydra:Operation",
-                "returns": "http://hydrus.com/info",
+                "returns": "http://hydrus.com/drone",
                 "label": "Retrieves all drone details.",
                 "method": "GET",
-                "@id": "_:info_retrieve",
+                "@id": "_:drone_retrieve",
                 "description": None,
                 "expects": None
             }
@@ -165,4 +165,4 @@ classes_ = [
 collection_classes = ["order"]
 
 ## Classes that need to be shown at Entrypoint
-entrypoint_classes = ["order", "info"]
+entrypoint_classes = ["order", "drone"]

@@ -50,7 +50,7 @@ def gen_classes(labels):
 # server_classes = gen_classes(server_labels)
 
 def main():
-    drone_labels = ['order', "info"]
+    drone_labels = ['order', "drone"]
     drone_classes = gen_classes(drone_labels)
 
     Session = sessionmaker(bind=models.engine)

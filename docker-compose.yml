@@ -45,20 +45,20 @@ services:
       main:
         aliases:
           - drone1
-
-  drone2:
-    restart: always
-    build: ./drone2/
-    ports:
-      - "8082:80"
-    environment:
-      # - HYDRUS_SERVER_URL=http://localhost:8082/ ## For linux local
-      - HYDRUS_SERVER_URL=http://192.168.99.100:8082/ ## For windows 10
-      # - HYDRUS_SERVER_URL=http://54.169.232.177:8082/
-    networks:
-      main:
-        aliases:
-          - drone2
+  #
+  # drone2:
+  #   restart: always
+  #   build: ./drone2/
+  #   ports:
+  #     - "8082:80"
+  #   environment:
+  #     # - HYDRUS_SERVER_URL=http://localhost:8082/ ## For linux local
+  #     - HYDRUS_SERVER_URL=http://192.168.99.100:8082/ ## For windows 10
+  #     # - HYDRUS_SERVER_URL=http://54.169.232.177:8082/
+  #   networks:
+  #     main:
+  #       aliases:
+  #         - drone2
 
 networks:
   main:
