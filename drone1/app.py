@@ -158,7 +158,7 @@ def gen_collection_context(server_url, type_):
     return template
 
 
-def hydrafy(classes_, object_, collection=False):
+def hydrafy(object_, collection=False):
     """Add hydra context to objects."""
     if collection:
         object_["@context"] = "/api/contexts/" + object_["@type"] + ".jsonld"
@@ -178,56 +178,48 @@ class Index(Resource):
 api.add_resource(Index, "/api", endpoint="api")
 
 
-class Item(Resource):
-    """Handles all operations(GET, POST, PATCH, DELETE) on Items (item can be anything depending upon the vocabulary)."""
+class Info(Resource):
+    """Handles all operations(GET, PUT) on Info."""
 
-    def get(self, id_, type_):
+    def get(self,):
         """GET object with id = id_ from the database."""
-        response = crud.get(id_, type_)
+        response = crud.get(1, "info")
         if "object" in response:
-            return set_response_headers(jsonify(hydrafy(CLASSES_, response)))
+            # print(response)
+            return set_response_headers(jsonify(hydrafy(response)))
         else:
             status_code = int(list(response.keys())[0])
             return set_response_headers(jsonify(response), status_code=status_code)
 
-    def post(self, id_, type_):
-        """Add object_ to database with optional id_ parameter (The id where the object needs to be inserted)."""
-        object_ = json.loads(request.data.decode('utf-8'))
-        object_ = struct_object(object_, type_)
-        # print(object_)
-
-        if validObject(object_):
-            response = crud.insert(object_=object_)
-
-            object_id = response[list(response.keys())[0]].split(" ")[3]
-            headers_ = [{"Location":SERVER_URL+"api/"+type_+ "/"+ object_id},]
-            status_code = int(list(response.keys())[0])
-
-            return set_response_headers(jsonify(response), headers = headers_, status_code=status_code)
-        else:
-            return set_response_headers(jsonify({400: "Data is not valid"}), status_code=400)
-
-    def put(self, id_, type_):
-        """Update object at id=id_ with object_ in database."""
-        object_ = json.loads(request.data.decode('utf-8'))
-        if validObject(object_):
-            response = crud.update(object_=object_, id_=id_, type_=type_)
-            headers_ = [{"Location":SERVER_URL+"api/"+type_+ "/"+ id_},]
-
-            status_code = int(list(response.keys())[0])
-            return set_response_headers(jsonify(response), headers=headers_, status_code=status_code)
-        else:
-            return set_response_headers(jsonify({400: "Data is not valid"}), status_code=400)
-
-    def delete(self, id_, type_):
-        """Delete object with id=id_ from database."""
-        resp = crud.delete(id_, type_)
-        return set_response_headers(jsonify(resp))
-
-
 # Needs to be changed manually
-api.add_resource(Item, "/api/<string:type_>/<int:id_>", endpoint="item")
+api.add_resource(Info, "/api/info", endpoint="info")
+api.add_resource(Info, "/api/info/1", endpoint="info_data")
 
+def update_info(identifier, speed, destination):
+    info = crud.get(1, "info")
+    if( info["object"]["Identifier"] == identifier):
+        info["object"]["Speed"] = speed
+        info["object"]["Destination"] = destination
+        return crud.update(1,"info", info)
+    else:
+        return {400: "Unknown identifier"}
+
+
+class Order(Resource):
+    """Handles all operations(GET, PUT) on Info."""
+
+    def get(self, id_):
+        """GET object with id = id_ from the database."""
+        response = crud.get(id_, "order")
+        if "object" in response:
+            # print(response)
+            return set_response_headers(jsonify(hydrafy(response)))
+        else:
+            status_code = int(list(response.keys())[0])
+            return set_response_headers(jsonify(response), status_code=status_code)
+
+
+api.add_resource(Info, "/api/order/<string:order_id>", endpoint="order")
 
 class ItemCollection(Resource):
     """Handle operation related to ItemCollection (a collection of items)."""
@@ -237,7 +229,7 @@ class ItemCollection(Resource):
         response = crud.get_collection(type_)
 
         if "members" in response:
-            return set_response_headers(jsonify(hydrafy(CLASSES_, response, collection=True)))
+            return set_response_headers(jsonify(hydrafy(response, collection=True)))
         else:
             status_code = int(list(response.keys())[0])
             return set_response_headers(jsonify(response), status_code=status_code)
@@ -248,17 +240,22 @@ class ItemCollection(Resource):
         object_ = struct_object(object_, type_)
         # print(object_)
 
+
         if validObject(object_):
-            response = crud.insert(object_=object_)
+            # Updating info before submitting order
+            status = update_info(object_["object"]["Identifier"], object_["object"]["Speed"], object_["object"]["Destination"])
+            if 200 in status.keys():
+                response = crud.insert(object_=object_)
 
-            object_id = response[list(response.keys())[0]].split(" ")[3]
-            headers_ = [{"Location":SERVER_URL+"api/"+type_+ "/"+ object_id},]
-            status_code = int(list(response.keys())[0])
+                object_id = response[list(response.keys())[0]].split(" ")[3]
+                headers_ = [{"Location":SERVER_URL+"api/"+type_+ "/"+ object_id},]
+                status_code = int(list(response.keys())[0])
 
-            return set_response_headers(jsonify(response), headers = headers_, status_code=status_code)
+                return set_response_headers(jsonify(response), headers = headers_, status_code=status_code)
+            else:
+                return set_response_headers(jsonify({400: "Data is not valid"}), status_code=400)
         else:
             return set_response_headers(jsonify({400: "Data is not valid"}), status_code=400)
-
 
 # Needs to be added manually.
 api.add_resource(ItemCollection, "/api/<string:type_>",

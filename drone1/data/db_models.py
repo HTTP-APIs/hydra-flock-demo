@@ -201,8 +201,10 @@ class GraphIIT(Graph):
         """Verbose object name."""
         return "<subject='%s', predicate='%s', object_='%s'>" % (self.subject, self.predicate, self.object_)
 
-
-if __name__ == "__main__":
+def main():
     print("Creating models....")
     Base.metadata.create_all(engine)
     print("Done")
+
+if __name__ == "__main__":
+    main()

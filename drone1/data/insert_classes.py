@@ -44,16 +44,21 @@ def gen_classes(labels):
 # spacecraft_classes = gen_classes(spacecraft_labels)
 # print(spacecraft_labels)
 #
-drone_labels = ['order']
-drone_classes = gen_classes(drone_labels)
 
 # NOTE: Order is skipped from server_labels because it's present in drone_labels
 # server_labels = ['drone', 'message', 'logs', 'status', 'datastream']
 # server_classes = gen_classes(server_labels)
 
-if __name__ == "__main__":
+def main():
+    drone_labels = ['order', "info"]
+    drone_classes = gen_classes(drone_labels)
+
     Session = sessionmaker(bind=models.engine)
     session = Session()
+
+    session.add_all(drone_classes)
+    session.commit()
+    print("Drone Classes added successfully.")
 
     # session.add_all(subsystem_classes)
     # session.commit()
@@ -63,10 +68,10 @@ if __name__ == "__main__":
     # session.commit()
     # print("Spacecraft classes added succesfully")
     #
-    session.add_all(drone_classes)
-    session.commit()
-    print("Drone Classes added successfully.")
 
     # session.add_all(server_classes)
     # session.commit()
     # print("Server classes added successfully.")
+
+if __name__ == "__main__":
+    main()

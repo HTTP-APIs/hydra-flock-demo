@@ -3,7 +3,7 @@
 import pprint
 
 
-def gen_entrypoint_supported_prop(item_type):
+def gen_entrypoint_supported_prop_collection(item_type):
     """Generate SupportedProperty for item_type from property template
      from Markus Lanthler's event api example."""
     ITEM_TYPE = item_type
@@ -15,19 +15,6 @@ def gen_entrypoint_supported_prop(item_type):
             "description": "The %s collection" % (ITEM_TYPE,),
             "domain": "vocab:EntryPoint",
             "range": "vocab:%sCollection" % (ITEM_TYPE,),
-            "supportedOperation": [
-                {
-                    "@id": "_:%s_collection_retrieve" % (ITEM_TYPE.lower(),),
-                    "@type": "hydra:Operation",
-                    "method": "GET",
-                    "label": "Retrieves all %s entities" % (ITEM_TYPE,),
-                    "description": None,
-                    "expects": None,
-                    "returns": "vocab:%sCollection" % (ITEM_TYPE,),
-                    "statusCodes": [
-                    ]
-                }
-            ]
         },
         "hydra:title": ITEM_TYPE.lower(),
         "hydra:description": "The %s collection" % (ITEM_TYPE,),
@@ -37,13 +24,38 @@ def gen_entrypoint_supported_prop(item_type):
     }
     return prop_template
 
+def gen_entrypoint_supported_prop(item_):
+    """Generate SupportedProperty for item_type from property template
+     from Markus Lanthler's event api example."""
+    ITEM_TYPE = item_["title"]
+    prop_template = {
+        "property": {
+            "@id": "vocab:EntryPoint/" + ITEM_TYPE,
+            "@type": "hydra:Link",
+            "label": ITEM_TYPE,
+            "description": item_["description"],
+            "domain": "vocab:EntryPoint",
+            "range": item_["@id"],
+            # "supportedOperation": item_["supportedOperation"]
 
-def gen_entrypoint_supported_props(classes_, entrypoint_classes):
+        },
+        "hydra:title": ITEM_TYPE.lower(),
+        "hydra:description": item_["description"],
+        "required": None,
+        "readonly": True,
+        "writeonly": False
+    }
+    return prop_template
+
+def gen_entrypoint_supported_props(classes_, entrypoint_classes, collection_classes):
     """Generate supported properties from classes_ for Entrypoint["supportedProperty"]."""
     supported_props = []
     for class_ in classes_:
-        if class_["title"] in entrypoint_classes:
-            supported_props.append(gen_entrypoint_supported_prop(class_["title"]))
+        if class_["title"] in entrypoint_classes and class_["title"] in collection_classes:
+            supported_props.append(gen_entrypoint_supported_prop_collection(class_["title"]))
+        elif class_["title"] in entrypoint_classes and class_["title"] not in collection_classes:
+            supported_props.append(gen_entrypoint_supported_prop(class_))
+
     return supported_props
 
 
@@ -65,6 +77,7 @@ def gen_item_collection(semantic_ref_name, item_):
                 "@id": "_:%s_create" % (ITEM_TYPE.lower()),
                 "@type": "http://schema.org/AddAction",
                 "method": "POST",
+                "label": "Create new %s entitity" % (ITEM_TYPE,),
                 "description": None,
                 "expects": [x["expects"] for x in ITEM_["supportedOperation"]][0] if [x["expects"] for x in ITEM_["supportedOperation"]][0] else None ,
                 "returns": [x["returns"] for x in ITEM_["supportedOperation"]][0] if [x["returns"] for x in ITEM_["supportedOperation"]][0] else None,
@@ -99,7 +112,7 @@ def gen_item_collection(semantic_ref_name, item_):
             }
         ]
     }
-
+    # print(collection_template)
     return collection_template
 
 
@@ -214,7 +227,7 @@ def gen_vocab(classes_, entrypoint_classes, collection_classes, server_url, sema
                         ]
                     }
                 ],
-                "supportedProperty": gen_entrypoint_supported_props(classes_, entrypoint_classes)
+                "supportedProperty": gen_entrypoint_supported_props(classes_, entrypoint_classes, collection_classes)
             },
             # Parsed classed from hydrus.hydraspec.parser will be added here
 

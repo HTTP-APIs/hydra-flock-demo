@@ -16,3 +16,4 @@ ENV PYTHONPATH $PYTHONPATH:/app/
 RUN mv hydrus/uwsgi.ini ./uwsgi.ini
 
 ENV MESSAGE "Hail Hydra"
+RUN python hydrus/data/drone_init.py
