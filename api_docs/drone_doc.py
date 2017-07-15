@@ -4,6 +4,7 @@ drone_doc = {
     "@context": {
         "ApiDocumentation": "hydra:ApiDocumentation",
         "code": "hydra:statusCode",
+        "description": "hydra:description",
         "domain": {
             "@id": "rdfs:domain",
             "@type": "@id"
@@ -14,6 +15,8 @@ drone_doc = {
         },
         "hydra": "http://www.w3.org/ns/hydra/core#",
         "label": "rdfs:label",
+        "method": "hydra:method",
+        "possibleStatus": "hydra:possibleStatus",
         "property": {
             "@id": "hydra:property",
             "@type": "@id"
@@ -25,11 +28,22 @@ drone_doc = {
         "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
         "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
         "readonly": "hydra:readonly",
+        "required": "hydra:required",
+        "returns": {
+            "@id": "hydra:returns",
+            "@type": "@id"
+        },
+        "statusCode": "hydra:statusCode",
+        "subClassOf": {
+            "@id": "rdfs:subClassOf",
+            "@type": "@id"
+        },
         "supportedClass": "hydra:supportedClass",
         "supportedOperation": "hydra:supportedOperation",
         "supportedProperty": "hydra:supportedProperty",
         "title": "hydra:title",
-        "vocab": "http://hydrus.com/droneapi/vocab#"
+        "vocab": "http://hydrus.com/droneapi/vocab#",
+        "writeonly": "hydra:writeonly"
     },
     "@id": "http://hydrus.com/droneapi/vocab",
     "@type": "ApiDocumentation",
@@ -37,57 +51,6 @@ drone_doc = {
     "entrypoint": "droneapi",
     "possibleStatus": [],
     "supportedClass": [
-        {
-            "@id": "vocab:Data",
-            "@type": "hydra:Class",
-            "description": "Class for a data entry",
-            "supportedOperation": [
-                {
-                    "@type": "hydra:Operation",
-                    "expects": "null",
-                    "method": "GET",
-                    "possibleStatus": [
-                        {
-                            "code": 404,
-                            "description": "Data not found"
-                        },
-                        {
-                            "code": 200,
-                            "description": "Data returned"
-                        }
-                    ],
-                    "returns": "vocab:Data",
-                    "title": "GetData"
-                }
-            ],
-            "supportedProperty": [
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/QuantitativeValue",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "Temperature",
-                    "writeable": "false"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/identifier",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "DroneID",
-                    "writeable": "false"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/geo",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "Position",
-                    "writeable": "false"
-                }
-            ],
-            "title": "Data"
-        },
         {
             "@id": "vocab:Drone",
             "@type": "hydra:Class",
@@ -99,8 +62,8 @@ drone_doc = {
                     "method": "GET",
                     "possibleStatus": [
                         {
-                            "code": 200,
-                            "description": "Status Returned"
+                            "description": "Status Returned",
+                            "statusCode": 200
                         }
                     ],
                     "returns": "vocab:Status",
@@ -112,8 +75,8 @@ drone_doc = {
                     "method": "POST",
                     "possibleStatus": [
                         {
-                            "code": 200,
-                            "description": "Command issued"
+                            "description": "Command issued",
+                            "statusCode": 200
                         }
                     ],
                     "returns": "null",
@@ -152,9 +115,76 @@ drone_doc = {
                     "required": "false",
                     "title": "MaxSpeed",
                     "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/device",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Sensor",
+                    "writeable": "true"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/identifier",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "DroneID",
+                    "writeable": "true"
                 }
             ],
             "title": "Drone"
+        },
+        {
+            "@id": "vocab:Data",
+            "@type": "hydra:Class",
+            "description": "Class for a data entry",
+            "supportedOperation": [
+                {
+                    "@type": "hydra:Operation",
+                    "expects": "null",
+                    "method": "GET",
+                    "possibleStatus": [
+                        {
+                            "description": "Data not found",
+                            "statusCode": 404
+                        },
+                        {
+                            "description": "Data returned",
+                            "statusCode": 200
+                        }
+                    ],
+                    "returns": "vocab:Data",
+                    "title": "GetData"
+                }
+            ],
+            "supportedProperty": [
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/QuantitativeValue",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Temperature",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/identifier",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "DroneID",
+                    "writeable": "false"
+                },
+                {
+                    "@type": "SupportedProperty",
+                    "property": "http://schema.org/geo",
+                    "readable": "true",
+                    "required": "false",
+                    "title": "Position",
+                    "writeable": "false"
+                }
+            ],
+            "title": "Data"
         },
         {
             "@id": "vocab:Status",
@@ -184,22 +214,6 @@ drone_doc = {
                     "readable": "true",
                     "required": "false",
                     "title": "Battery",
-                    "writeable": "true"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/device",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "Sensor",
-                    "writeable": "true"
-                },
-                {
-                    "@type": "SupportedProperty",
-                    "property": "http://schema.org/model",
-                    "readable": "true",
-                    "required": "false",
-                    "title": "Model",
                     "writeable": "true"
                 },
                 {
@@ -256,42 +270,6 @@ drone_doc = {
             ],
             "supportedProperty": [
                 {
-                    "hydra:description": "The Data Class",
-                    "hydra:title": "data",
-                    "property": {
-                        "@id": "vocab:EntryPoint/Data",
-                        "@type": "hydra:Link",
-                        "description": "Class for a data entry",
-                        "domain": "vocab:EntryPoint",
-                        "label": "Data",
-                        "range": "vocab:DataCollection",
-                        "supportedOperation": [
-                            {
-                                "@id": "_:getdata",
-                                "@type": "hydra:Operation",
-                                "description": "null",
-                                "expects": "null",
-                                "label": "GetData",
-                                "method": "GET",
-                                "returns": "vocab:Data",
-                                "statusCodes": [
-                                    {
-                                        "code": 404,
-                                        "description": "Data not found"
-                                    },
-                                    {
-                                        "code": 200,
-                                        "description": "Data returned"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "readonly": "true",
-                    "required": "null",
-                    "writeonly": "false"
-                },
-                {
                     "hydra:description": "The Drone Class",
                     "hydra:title": "drone",
                     "property": {
@@ -312,8 +290,8 @@ drone_doc = {
                                 "returns": "vocab:Status",
                                 "statusCodes": [
                                     {
-                                        "code": 200,
-                                        "description": "Status Returned"
+                                        "description": "Status Returned",
+                                        "statusCode": 200
                                     }
                                 ]
                             },
@@ -327,8 +305,44 @@ drone_doc = {
                                 "returns": "null",
                                 "statusCodes": [
                                     {
-                                        "code": 200,
-                                        "description": "Command issued"
+                                        "description": "Command issued",
+                                        "statusCode": 200
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "readonly": "true",
+                    "required": "null",
+                    "writeonly": "false"
+                },
+                {
+                    "hydra:description": "The Data Class",
+                    "hydra:title": "data",
+                    "property": {
+                        "@id": "vocab:EntryPoint/Data",
+                        "@type": "hydra:Link",
+                        "description": "Class for a data entry",
+                        "domain": "vocab:EntryPoint",
+                        "label": "Data",
+                        "range": "vocab:DataCollection",
+                        "supportedOperation": [
+                            {
+                                "@id": "_:getdata",
+                                "@type": "hydra:Operation",
+                                "description": "null",
+                                "expects": "null",
+                                "label": "GetData",
+                                "method": "GET",
+                                "returns": "vocab:Data",
+                                "statusCodes": [
+                                    {
+                                        "description": "Data not found",
+                                        "statusCode": 404
+                                    },
+                                    {
+                                        "description": "Data returned",
+                                        "statusCode": 200
                                     }
                                 ]
                             }

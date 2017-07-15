@@ -301,10 +301,24 @@ class Context():
                 },
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "title": "hydra:title",
-                "readonly": "hydra:readonly",
                 "expects": {
                     "@type": "@id",
                     "@id": "hydra:expects"
+                },
+                "returns": {
+                    "@id": "hydra:returns",
+                    "@type": "@id"
+                },
+                "readonly": "hydra:readonly",
+                "writeonly": "hydra:writeonly",
+                "possibleStatus": "hydra:possibleStatus",
+                "required": "hydra:required",
+                "method": "hydra:method",
+                "statusCode": "hydra:statusCode",
+                "description": "hydra:description",
+                "subClassOf": {
+                    "@id": "rdfs:subClassOf",
+                    "@type": "@id"
                 }
             }
 

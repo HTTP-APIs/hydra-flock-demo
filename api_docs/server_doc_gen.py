@@ -13,34 +13,33 @@ def server_doc(API, BASE_URL):
                        API,
                        BASE_URL)
 
-    # Drone operations on server must be linked to same operations on the specific drone
+    # Status Class
     status = HydraClass("Status", "Status", "Class for drone status objects")
     # Properties
     status.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "Speed", True, False, False))
     status.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
     status.add_supported_prop(HydraClassProp("http://schema.org/fuelCapacity", "Battery", True, True, False))
-    status.add_supported_prop(HydraClassProp("http://schema.org/device", "Sensor", True, True, False))
-    status.add_supported_prop(HydraClassProp("http://schema.org/model", "Model", True, True, False))
     status.add_supported_prop(HydraClassProp("https://schema.org/status", "SensorStatus", True, False, False))
 
     # Drone Class
-    drone = HydraClass("Drone", "Drone", "Class for a drone")
+    drone = HydraClass("Drone", "Drone", "Class for a drone", endpoint=True)
     # Properties
     drone.add_supported_prop(HydraClassProp("vocab:Status", "DroneStatus", True, False, False))
     drone.add_supported_prop(HydraClassProp("http://schema.org/name", "name", True, False, False))
     drone.add_supported_prop(HydraClassProp("http://schema.org/model", "model", True, False, False))
     drone.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "MaxSpeed", True, False, False))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/device", "Sensor", True, True, False))
     # Operations
     drone.add_supported_op(HydraClassOp("SubmitStatus",
                                         "PUT",
                                         "vocab:Status",
                                         None,
-                                        [{"code": 200, "description": "Drone Status updated"}]))
+                                        [{"statusCode": 200, "description": "Drone Status updated"}]))
     drone.add_supported_op(HydraClassOp("GetDrone",
                                         "GET",
                                         None,
                                         "vocab:Drone",
-                                        [{"code": 200, "description": "Drone Returned"}]))
+                                        [{"statusCode": 200, "description": "Drone Returned"}]))
 
     command = HydraClass("Command", "Command", "Class for drone commands")
     command.add_supported_prop(HydraClassProp("http://schema.org/UpdateAction", "Update", False, True, False))
@@ -61,8 +60,8 @@ def server_doc(API, BASE_URL):
                                       "GET",
                                       "null",
                                       "voab:LogEntry",
-                                      [{"code": 404, "description": "Log entry not found"},
-                                       {"code": 200, "description": "Log entry returned"}]))
+                                      [{"statusCode": 404, "description": "Log entry not found"},
+                                       {"statusCode": 200, "description": "Log entry returned"}]))
 
     data = HydraClass("Data", "Data", "Class for a data entry")
     data.add_supported_prop(HydraClassProp("http://schema.org/QuantitativeValue", "Temperature", True, False, False))
@@ -72,13 +71,13 @@ def server_doc(API, BASE_URL):
                                        "GET",
                                        "null",
                                        "vocab:Data",
-                                       [{"code": 404, "description": "Data not found"},
-                                        {"code": 200, "description": "Data returned"}]))
+                                       [{"statusCode": 404, "description": "Data not found"},
+                                        {"statusCode": 200, "description": "Data returned"}]))
     data.add_supported_op(HydraClassOp("SubmitData",
                                        "POST",
                                        "vocab:Data",
                                        "null",
-                                       [{"code": 201, "description": "Data added"}]))
+                                       [{"statusCode": 201, "description": "Data added"}]))
 
     area = HydraClass("Area", "Area", "Class for Area of Interest of the server", endpoint=True)
     # Using two positions to have a bounding box
@@ -89,13 +88,13 @@ def server_doc(API, BASE_URL):
                                        "PUT",
                                        "http://hydrus.com/Area",
                                        "null",
-                                       [{"code": 200, "description": "Area of interest changed"}]))
+                                       [{"statusCode": 200, "description": "Area of interest changed"}]))
     area.add_supported_op(HydraClassOp("GetArea",
                                        "GET",
                                        "null",
                                        "http://hydrus.com/Area",
-                                       [{"code": 404, "description": "Area of not found"},
-                                        {"code": 200, "description": "Area of returned"}]))
+                                       [{"statusCode": 404, "description": "Area of not found"},
+                                        {"statusCode": 200, "description": "Area of returned"}]))
 
     message = HydraClass("Message", "Message", "Class for messages received by the GUI interface")
     message.add_supported_prop(HydraClassProp("http://schema.org/Text", "MessageString", True, True, False))
