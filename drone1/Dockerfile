@@ -18,11 +18,14 @@ RUN git clone https://github.com/xadahiya/hydrus/ hydrus_main
 
 COPY  . /app/
 
-ENV PYTHONPATH $PYTHONPATH:/app/hydrus_main/
+ENV PYTHONPATH $PYTHONPATH:/app/hydrus_main/:/app/
 
 RUN mv hydrus_main/hydrus/uwsgi.ini ./uwsgi.ini
 
-#Move the apidoc to hydrus
+# Initialize database
+RUN python db_init.py
+
+# Move the apidoc to hydrus
 RUN mv api_docs/doc_gen.py hydrus_main/hydrus/metadata/
 
 ENV MESSAGE "Hail Hydra"

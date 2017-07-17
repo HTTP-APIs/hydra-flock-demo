@@ -1,8 +1,7 @@
 """API Doc generator for the drone side API."""
 
 from hydrus.hydraspec.doc_writer import HydraDoc, HydraClass, HydraClassProp, HydraClassOp
-import json
-
+import pprint
 
 def doc_gen(API, BASE_URL):
     """Generate API Doc for drone."""
@@ -14,7 +13,7 @@ def doc_gen(API, BASE_URL):
                        BASE_URL)
 
     # Status Class
-    status = HydraClass("http://hydrus.com/Status", "Status", "Class for drone status objects")
+    status = HydraClass("Status", "Status", "Class for drone status objects")
     # Properties
     status.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "Speed", True, False, False))
     status.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
@@ -22,7 +21,7 @@ def doc_gen(API, BASE_URL):
     status.add_supported_prop(HydraClassProp("https://schema.org/status", "SensorStatus", True, False, False))
 
     # Drone Class
-    drone = HydraClass("http://hydrus.com/Drone", "Drone", "Class for a drone", endpoint=True)
+    drone = HydraClass("Drone", "Drone", "Class for a drone", endpoint=True)
     # Properties
     drone.add_supported_prop(HydraClassProp("vocab:Status", "DroneStatus", True, False, False))
     drone.add_supported_prop(HydraClassProp("http://schema.org/name", "name", True, False, False))
@@ -42,7 +41,7 @@ def doc_gen(API, BASE_URL):
                                         None,
                                         [{"statusCode": 200, "description": "Command issued"}]))
 
-    data = HydraClass("http://hydrus.com/Data", "Data", "Class for a data entry", endpoint=True)
+    data = HydraClass("Data", "Data", "Class for a data entry", endpoint=True)
     data.add_supported_prop(HydraClassProp("http://schema.org/QuantitativeValue", "Temperature", True, False, False))
     data.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", True, False, False))
     data.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
@@ -64,5 +63,6 @@ def doc_gen(API, BASE_URL):
 
 
 if __name__ == "__main__":
-    print(json.dumps(doc_gen("droneapi", "http://hydrus.com/").generate(), indent=4, sort_keys=True))
-    # print(drone_doc("droneapi", "http://hydrus.com/").generate())
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(doc_gen("droneapi", "").generate())
+    # print(drone_doc("droneapi", "").generate())

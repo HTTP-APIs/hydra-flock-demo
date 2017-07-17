@@ -1,11 +1,14 @@
 """
 Example to create post reqests to the server.
 """
+from hydra import Resource, SCHEMA
+from rdflib import Namespace
+
+DRONE1 = Namespace('http://192.168.99.100:8085/serverapi/vocab#')
 
 def main():
-    the_iri_of_the_resource = 'http://192.168.99.100:8080/api'
+    the_iri_of_the_resource = 'http://192.168.99.100:8085/serverapi'
 
-    from hydra_client import Resource, SCHEMA, HYDRUS
     res = Resource.from_iri(the_iri_of_the_resource)
 
     print(res)
@@ -18,16 +21,20 @@ def main():
     print("")
 
 # Create new order for drone
-    create_order = res.find_suitable_operation(SCHEMA.AddAction, SCHEMA.order)
-    resp, body = create_order({
-        "Destination": "This is halloween, this is halloween",
-        "Speed": "2015-10-31T00:00:00Z",
-        "Identifier": "2015-10-31T23:59:59Z",
-    })
+    print(DRONE1.Data)
+    create_order = res.find_suitable_operation(input_type = None, output_type= DRONE1.DataCollection)
+    print(create_order)
+    resp, body = create_order()
+    print(body)
+    # resp, body = create_order({
+    #     "Destination": "This is halloween, this is halloween",
+    #     "Speed": "2015-10-31T00:00:00Z",
+    #     "Identifier": "2015-10-31T23:59:59Z",
+    # })
 
     assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
     new_order = Resource.from_iri(resp['location'])
-    print(new_order)
+    # print(new_order)
 
 ## Create new message for drone
     create_message = res.find_suitable_operation(

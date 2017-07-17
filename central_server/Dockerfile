@@ -21,6 +21,7 @@ COPY  . /app/
 ENV PYTHONPATH $PYTHONPATH:/app/hydrus_main/
 
 RUN mv hydrus_main/hydrus/uwsgi.ini ./uwsgi.ini
+
 RUN mv api_docs/doc_gen.py hydrus_main/hydrus/metadata/
 
 ENV MESSAGE "Hail Hydra"
