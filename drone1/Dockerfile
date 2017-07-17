@@ -9,11 +9,20 @@ RUN pip install -r requirements.txt
 
 RUN rm -rf *
 
-COPY  . /app/hydrus/
+# Clone and install hydra-py ( will be available by name hydra)
+RUN git clone https://github.com/pchampin/hydra-py
+RUN pip install ./hydra-py/
 
-ENV PYTHONPATH $PYTHONPATH:/app/
+# Clone hydrus into hydrus_main
+RUN git clone https://github.com/xadahiya/hydrus/ hydrus_main
 
-RUN mv hydrus/uwsgi.ini ./uwsgi.ini
+COPY  . /app/
+
+ENV PYTHONPATH $PYTHONPATH:/app/hydrus_main/
+
+RUN mv hydrus_main/hydrus/uwsgi.ini ./uwsgi.ini
+
+#Move the apidoc to hydrus
+RUN mv api_docs/doc_gen.py hydrus_main/hydrus/metadata/
 
 ENV MESSAGE "Hail Hydra"
-RUN python hydrus/data/drone_init.py
