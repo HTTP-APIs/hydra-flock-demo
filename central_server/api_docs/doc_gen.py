@@ -1,7 +1,8 @@
 """API Doc generator for the server side API."""
 
 from hydrus.hydraspec.doc_writer import HydraDoc, HydraClass, HydraClassProp, HydraClassOp
-import pprint
+import json
+
 
 def doc_gen(API, BASE_URL):
     """Generate API Doc for server."""
@@ -12,39 +13,44 @@ def doc_gen(API, BASE_URL):
                        API,
                        BASE_URL)
 
-    # Status Class
-    status = HydraClass("Status", "Status", "Class for drone status objects")
+    # State Class
+    state = HydraClass("State", "State", "Class for drone state objects")
     # Properties
-    status.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "Speed", True, False, False))
-    status.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
-    status.add_supported_prop(HydraClassProp("http://schema.org/fuelCapacity", "Battery", True, True, False))
-    status.add_supported_prop(HydraClassProp("https://schema.org/status", "SensorStatus", True, False, False))
+    state.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "Speed", True, False, False))
+    state.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
+    state.add_supported_prop(HydraClassProp("http://schema.org/fuelCapacity", "Battery", True, True, False))
+    state.add_supported_prop(HydraClassProp("https://schema.org/status", "SensorStatus", True, False, False))
 
     # Drone Class
-    drone = HydraClass("Drone", "Drone", "Class for a drone")
+    drone = HydraClass("Drone", "Drone", "Class for a drone", endpoint=True)
     # Properties
-    drone.add_supported_prop(HydraClassProp("vocab:Status", "DroneStatus", True, False, False))
+    drone.add_supported_prop(HydraClassProp("vocab:State", "DroneState", True, False, False))
     drone.add_supported_prop(HydraClassProp("http://schema.org/name", "name", True, False, False))
     drone.add_supported_prop(HydraClassProp("http://schema.org/model", "model", True, False, False))
     drone.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "MaxSpeed", True, False, False))
     drone.add_supported_prop(HydraClassProp("http://schema.org/device", "Sensor", True, True, False))
     # Operations
-    drone.add_supported_op(HydraClassOp("SubmitStatus",
-                                        "PUT",
-                                        "vocab:Status",
+    # Drones will submit their state to the server at certain intervals or when some event happens
+    drone.add_supported_op(HydraClassOp("SubmitState",
+                                        "POST",
+                                        "vocab:State",
                                         None,
-                                        [{"statusCode": 200, "description": "Drone Status updated"}]))
+                                        [{"statusCode": 200, "description": "Drone State updated"}]))
+    # Mechanics or GUI need to get the drone, it contains the state object of the drone already.
     drone.add_supported_op(HydraClassOp("GetDrone",
                                         "GET",
                                         None,
                                         "vocab:Drone",
-                                        [{"statusCode": 200, "description": "Drone Returned"}]))
+                                        [{"statusCode": 404, "description": "Drone not found"},
+                                         {"statusCode": 200, "description": "Drone Returned"}]))
 
+    # No need for endpoint. Server mechanics will create and add send them to the drone
     command = HydraClass("Command", "Command", "Class for drone commands")
     command.add_supported_prop(HydraClassProp("http://schema.org/UpdateAction", "Update", False, True, False))
-    command.add_supported_prop(HydraClassProp("vocab:Status", "Status", False, False, False))
+    command.add_supported_prop(HydraClassProp("vocab:State", "State", False, False, False))
 
-    log = HydraClass("LogEntry", "LogEntry", "Class for a log entry")
+    # Logs to be accessed mostly by the GUI. Mechanics should add logs for every event.
+    log = HydraClass("vocab:LogEntry", "LogEntry", "Class for a log entry", endpoint=True)
     # Subject
     log.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", True, True, False))
     # Predicate
@@ -52,17 +58,20 @@ def doc_gen(API, BASE_URL):
     log.add_supported_prop(HydraClassProp("http://schema.org/ReplyAction", "Get", False, True, False))
     log.add_supported_prop(HydraClassProp("http://schema.org/SendAction", "Send", False, True, False))
     # Objects
-    log.add_supported_prop(HydraClassProp("vocab:Status", "Status", False, True, False))
+    log.add_supported_prop(HydraClassProp("vocab:State", "State", False, True, False))
     log.add_supported_prop(HydraClassProp("vocab:Data", "Data", False, True, False))
     log.add_supported_prop(HydraClassProp("vocab:Command", "Command", False, True, False))
+    # GUI will get a certain log entry.
     log.add_supported_op(HydraClassOp("GetLog",
                                       "GET",
                                       None,
-                                      "voab:LogEntry",
+                                      "vocab:LogEntry",
                                       [{"statusCode": 404, "description": "Log entry not found"},
                                        {"statusCode": 200, "description": "Log entry returned"}]))
 
-    data = HydraClass("Data", "Data", "Class for a data entry")
+    # Data is stored as a collection. Each data object can be read.
+    # New data added to the collection
+    data = HydraClass("vocab:Data", "Data", "Class for a data entry", endpoint=True)
     data.add_supported_prop(HydraClassProp("http://schema.org/QuantitativeValue", "Temperature", True, False, False))
     data.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", True, False, False))
     data.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", True, False, False))
@@ -72,13 +81,9 @@ def doc_gen(API, BASE_URL):
                                        "vocab:Data",
                                        [{"statusCode": 404, "description": "Data not found"},
                                         {"statusCode": 200, "description": "Data returned"}]))
-    data.add_supported_op(HydraClassOp("SubmitData",
-                                       "POST",
-                                       "vocab:Data",
-                                       None,
-                                       [{"statusCode": 201, "description": "Data added"}]))
 
-    area = HydraClass("Area", "Area", "Class for Area of Interest of the server", endpoint=True)
+    # Single object representing the area of interest. No collections.
+    area = HydraClass("vocab:Area", "Area", "Class for Area of Interest of the server", endpoint=True)
     # Using two positions to have a bounding box
     area.add_supported_prop(HydraClassProp("http://schema.org/geo", "TopLeft", True, True, True))
     area.add_supported_prop(HydraClassProp("http://schema.org/geo", "BottomRight", True, True, True))
@@ -92,14 +97,20 @@ def doc_gen(API, BASE_URL):
                                        "GET",
                                        None,
                                        "vocab:Area",
-                                       [{"statusCode": 404, "description": "Area of not found"},
-                                        {"statusCode": 200, "description": "Area of returned"}]))
+                                       [{"statusCode": 404, "description": "Area of interest not found"},
+                                        {"statusCode": 200, "description": "Area of interest returned"}]))
 
-    message = HydraClass("Message", "Message", "Class for messages received by the GUI interface")
+    message = HydraClass("vocab:Message", "Message", "Class for messages received by the GUI interface", endpoint=True)
     message.add_supported_prop(HydraClassProp("http://schema.org/Text", "MessageString", True, True, False))
+    message.add_supported_op(HydraClassOp("GetMessage",
+                                          "GET",
+                                          None,
+                                          "vocab:Message",
+                                          [{"statusCode": 404, "description": "Message not found"},
+                                           {"statusCode": 200, "description": "Message returned"}]))
 
     api_doc.add_supported_class(drone, collection=True)
-    api_doc.add_supported_class(status, collection=True)
+    api_doc.add_supported_class(state, collection=False)
     api_doc.add_supported_class(data, collection=True)
     api_doc.add_supported_class(log, collection=True)
     api_doc.add_supported_class(area, collection=False)
@@ -113,5 +124,11 @@ def doc_gen(API, BASE_URL):
 
 
 if __name__ == "__main__":
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(doc_gen("serverapi", "").generate())
+    dump = json.dumps(doc_gen("serverapi", "http://localhost/").generate(), indent=4, sort_keys=True)
+    doc = '''"""Generated API Documentation for Server API using server_doc_gen.py."""\n\nserver_doc = %s''' % dump
+    doc = doc.replace('true', '"true"')
+    doc = doc.replace('false', '"false"')
+    doc = doc.replace('null', '"null"')
+    f = open("doc.py", "w")
+    f.write(doc)
+    f.close()
