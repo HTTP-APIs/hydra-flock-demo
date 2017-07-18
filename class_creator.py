@@ -1,5 +1,7 @@
 """Generate classes from parsed_classes with proper getter and setter for each Property."""
 
+# NOTE: Work in Progress, DO NOT USE
+
 from api_docs.server_doc import server_doc
 from api_docs.drone_doc import drone_doc
 import pdb
