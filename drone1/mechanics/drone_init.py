@@ -1,59 +1,34 @@
 """Initialize drone."""
-from hydra import Resource, SCHEMA
-from rdflib import Namespace
-import json
+from mechanics.main import RES_CS, RES_DRONE
+from mechanics.main import CENTRAL_SERVER, DRONE1
+from mechanics.main import get_drone, get_drone_default, update_drone
 
-CENTRAL_SERVER = Namespace('http://central_server/serverapi/vocab#')
-DRONE1 = Namespace('http://drone1/droneapi/vocab#')
-
-global RES_CS, RES_DRONE
-the_iri_of_the_resource_cs = 'http://central_server/serverapi'
-RES_CS = Resource.from_iri(the_iri_of_the_resource_cs)
-
-the_iri_of_the_resource_drone = 'http://drone1/droneapi'
-RES_DRONE = Resource.from_iri(the_iri_of_the_resource_drone)
-
-
-def update_drone_identifier(id_):
-    """Update the drone identifier."""
-    ### GET current drone object
-    get_drone = RES_DRONE.find_suitable_operation(operation_type=None, input_type = None, output_type= DRONE1.Drone)
-    resp, body = get_drone()
-    drone = json.load(body)
-
-    ### Update the drone id
-    drone["Identifier"] = id_
-
-    ### Update drone object
-    update_drone = RES_DRONE.find_suitable_operation(operation_type=SCHEMA.updateAction, input_type=DRONE1.Drone)
-    resp, body = update_drone(drone)
+def add_drone(drone):
+    """Add the drone object to the central server and return Id."""
+    add_drone = RES_CS.find_suitable_operation(
+        SCHEMA.AddAction, CENTRAL_SERVER.Drone)
+    resp, body = add_drone(drone)
     assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
+    drone_id = resp['location'].split("/")[-1]
+    return drone_id
 
-    print("Drone initialized successfully!")
-    return Resource.from_iri(resp['location'])
+def update_drone_id(id_):
+    """Update the drone identifier."""
+    # GET current drone object
+    drone = get_drone()
+    # Update the drone id
+    drone["DroneID"] = id_
+
+    # Update drone object
+    update_drone(drone)
+    print("DroneID updated successfully", id_)
+    return None
 
 def init_drone():
-
-# Create new order for drone
-    create_drone = RES_CS.find_suitable_operation(SCHEMA.AddAction, CENTRAL_SERVER.Drone)
-    resp, body = create_drone({
-        "@type": "Drone",
-        "Sensor": "Temprature"
-        "MaxSpeed": 50
-        "model": "drone111"
-        "name": "drone1"
-        "Identifier": -1,
-        "DroneStatus": {
-                "Speed": 0,
-                "Position": "0,0",
-                "Battery": 100,
-                "Destination":"0,0",
-                "SensorStatus": "Normal"
-        }
-    })
-    assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
-    new_drone = Resource.from_iri(resp['location'])
-    identifier = resp['location'].split("/")[-1]
-    update_drone_identifier(identifier)
-    print("Identifier updated successfully", identifier)
+    """Initialize drone."""
+    # Add drone to the central_server and get identifier
+    drone_id = add_drone(get_drone_default())
+    # Update the drone on localhost
+    update_drone_id(drone_id)
+    print("Drone initialized successfully!")
     return None

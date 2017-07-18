@@ -1,117 +1,143 @@
-"""
-Example to create post reqests to the server.
-"""
-from hydrapy import Resource, SCHEMA, HYDRUS
-from hydrus.data import crud
+""" Handles main configuration for the drone."""
+from hydra import Resource, SCHEMA, Collection
+from rdflib import Namespace
+import json
 
-global RES
-the_iri_of_the_resource = 'http://central_server/api'
-RES = Resource.from_iri(the_iri_of_the_resource)
+CENTRAL_SERVER = Namespace('http://central_server/serverapi/vocab#')
+DRONE1 = Namespace('http://drone1/droneapi/vocab#')
+DRONE_URL = "http://drone1"
 
-def update_drone_identifier(identifier):
-    drone = crud.get(1, "drone")
-    drone["object"]["Identifier"] = identifier
-    return crud.update(1,"drone", drone)
+global RES_CS, RES_DRONE
+the_iri_of_the_resource_cs = 'http://central_server/serverapi'
+RES_CS = Resource.from_iri(the_iri_of_the_resource_cs)
 
-def get_drone_identifier():
-    drone = crud.get(1, "drone")
-    return drone["object"]["Identifier"]
+the_iri_of_the_resource_drone = 'http://drone1/droneapi'
+RES_DRONE = Resource.from_iri(the_iri_of_the_resource_drone)
 
-
-def get_drone():
-    return crud.get(1, "drone")
-
-def init_drone():
-
-# Create new order for drone
-    create_drone = RES.find_suitable_operation(SCHEMA.AddAction, HYDRUS.drone)
-    resp, body = create_drone({
-        "name": "drone1",
-        "@type": "drone",
-        "object": {
-                "Identifier": -1,
+### Drone related methods
+def get_drone_default():
+    """Returns a default drone object with DroneID -1 for initialization."""
+    drone_default = {
+        "@type": "Drone",
+        "Sensor": "Temprature"
+        "MaxSpeed": 50
+        "model": "drone111"
+        "name": "drone1"
+        "DroneID": -1,
+        "DroneStatus": {
                 "Speed": 0,
                 "Position": "0,0",
                 "Battery": 100,
-                "Destination":"0,0",
-                "Sensor": "temprature",
-                "Status": "Started"
+                "Destination": "0,0",
+                "SensorStatus": "Normal"
         }
-    })
-    assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
-    new_drone = Resource.from_iri(resp['location'])
-    identifier = resp['location'].split("/")[-1]
-    update_drone_identifier(identifier)
-    print("Identifier updated successfully", identifier)
-    return None
+    }
 
-def send_datastream(temperature):
+    return drone_default
+
+
+def get_drone():
+    """Get the drone object from drone server."""
+    get_drone = RES_DRONE.find_suitable_operation(
+        operation_type=None, input_type=None, output_type=DRONE1.Drone)
+    resp, body = get_drone()
+    assert resp.status == 200, "%s %s" % (resp.status, resp.reason)
+
+    drone = json.load(body)
+    return drone
+
+def get_drone_id():
+    """Return current drone id from drone server."""
     drone = get_drone()
-    position = drone["object"]["Position"]
-    identifier = drone["object"]["Identifier"]
+    return drone["DroneID"]
 
-    create_datastream = RES.find_suitable_operation(SCHEMA.AddAction, HYDRUS.datastream)
-    resp, body = create_datastream({
-        "Position": position,
-        "Temperature": temperature,
-        "Identifier": identifier,
-
-    })
+def update_drone(drone):
+    """Update the drone object on drone server."""
+    update_drone = RES_DRONE.find_suitable_operation(
+    operation_type=SCHEMA.updateAction, input_type=DRONE1.Drone)
+    resp, body = update_drone(drone)
     assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
-    new_datastream = Resource.from_iri(resp['location'])
-    return new_datastream
 
-def send_status(progress):
+    return Resource.from_iri(resp['location'])
 
-    drone = get_drone()
-    identifier = drone["object"]["Identifier"]
-    position = drone["object"]["Position"]
-    speed = drone["object"]["Speed"]
-    destination = drone["object"]["Destination"]
-    battery = drone["object"]["Battery"]
-    progress = progress
+## Datastream related methods
+def gen_datastream(temperature, position, drone_id=get_drone_id()):
+    """Generate a datastream objects."""
+    datastream = {
+        "Temperature":temperature,
+        "DroneID":drone_id,
+        "Position":position
+    }
 
+def update_datastream(datastream):
+    """Update the drone datastream on drone server."""
+    update_datastream = RES_Drone.find_suitable_operation(
+        operation_type=SCHEMA.updateAction, input_type=DRONE1.Data)
+    resp, body = update_datastream(datastream)
+    assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
 
-    create_status = RES.find_suitable_operation(SCHEMA.AddAction, HYDRUS.status)
-    resp, body = create_status({
-        "Identifier": identifier,
-        "Position": position,
+    return Resource.from_iri(resp['location'])
+
+def get_datastream():
+    """Get the drone datastream from drone server."""
+    get_datastream = RES_DRONE.find_suitable_operation(
+        operation_type=None, input_type=None, output_type=DRONE1.Data)
+    resp, body = get_drone()
+    assert resp.status == 200, "%s %s" % (resp.status, resp.reason)
+
+    datastream = json.load(body)
+    return datastream
+
+## Status related methods
+def gen_status(speed, position, battery, sensor_status, drone_id=get_drone_id()):
+    """Generate a datastream objects."""
+    status = {
         "Speed": speed,
-        "Destination": destination,
+        "Position": position,
         "Battery": battery,
-        "Progress": progress,
-    })
-    assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
-    new_status = Resource.from_iri(resp['location'])
-    return new_status
+        "SensorStatus": sensor_status,
+        "DroneID": drone_id,
+    }
+    return status
 
-#     create_order = RES.find_suitable_operation(SCHEMA.AddAction, SCHEMA.order)
-#     resp, body = create_order({
-#         "Destination": "This is halloween, this is halloween",
-#         "Speed": "2015-10-31T00:00:00Z",
-#         "Identifier": "2015-10-31T23:59:59Z",
-#     })
-#     assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
-#     new_order = Resource.from_iri(resp['location'])
-#     print(new_order)
-#
-# ## Create new message for drone
-#     create_message = RES.find_suitable_operation(
-#         SCHEMA.AddAction, HYDRUS.message)
-#     resp, body = create_message({
-#         "message": "testing message 1"
-#     })
-#
-#     assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
-#     new_message = Resource.from_iri(resp['location'])
-#
-#     print(new_message)
+def update_status(status):
+    """Update the drone status on drone server."""
+    drone = get_drone()
+    if drone["DroneID"] == status["DroneID"]:
+        ## Remove the DroneID key from status
+        status.pop("DroneID", None)
 
+        ## Update the drone status
+        drone["DroneStatus"] = status
+        update_drone(drone)
+        print("Drone status updated successfully.")
+    else:
+        print("ERROR: DroneID %s not valid." %(status["DroneID"]))
 
-if __name__ == "__main__":
-    init_drone()
+def get_status():
+    """Get the current drone status from the drone server."""
+    drone = get_drone()
+    drone_status = drone["DroneStatus"]
+    drone_status["DroneID"] = drone["DroneID"]
 
-    print(send_datastream(300))
+    return drone_status
 
-    print(send_status("Analysing"))
-    # main()
+## Orders related methods
+def get_order_collection():
+    """Get order collection from the drone server."""
+    get_orders = RES_DRONE.find_suitable_operation(None, None, DRONE1.OrderCollection)
+    resp, body = get_orders()
+    assert resp.status == 200, "%s %s" % (resp.status, resp.reason)
+
+    body = json.loads(body)
+    return body
+
+def delete_order(id_):
+    """Delete a order from the collection given order @id attribute."""
+    res = Resource.from_iri(DRONE_URL + id_)
+    # name = i.value(SCHEMA.name)
+    resp, _ = i.find_suitable_operation(SCHEMA.DeleteAction)()
+    if resp.status // 100 != 2:
+        print("error deleting <%s>" % i.identifier)
+    else:
+        print("deleted <%s>" % i.identifier)
