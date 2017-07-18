@@ -5,9 +5,9 @@ from mechanics.main import get_drone, get_drone_default, update_drone
 
 def add_drone(drone):
     """Add the drone object to the central server and return Id."""
-    add_drone = RES_CS.find_suitable_operation(
+    add_drone_ = RES_CS.find_suitable_operation(
         SCHEMA.AddAction, CENTRAL_SERVER.Drone)
-    resp, body = add_drone(drone)
+    resp, body = add_drone_(drone)
     assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
     drone_id = resp['location'].split("/")[-1]
     return drone_id

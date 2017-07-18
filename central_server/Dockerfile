@@ -18,7 +18,7 @@ RUN git clone https://github.com/xadahiya/hydrus/ hydrus_main
 
 COPY  . /app/
 
-ENV PYTHONPATH $PYTHONPATH:/app/hydrus_main/
+ENV PYTHONPATH $PYTHONPATH:/app/hydrus_main/:/app/
 
 RUN mv hydrus_main/hydrus/uwsgi.ini ./uwsgi.ini
 

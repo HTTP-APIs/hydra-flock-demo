@@ -8,7 +8,6 @@ httplib2==0.10.3
 isodate==0.5.4
 itsdangerous==0.24
 Jinja2==2.9.6
-lifter==0.4.1
 MarkupSafe==1.0
 packaging==16.8
 persisting-theory==0.2.1
