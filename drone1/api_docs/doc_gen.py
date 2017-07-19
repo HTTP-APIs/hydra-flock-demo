@@ -36,22 +36,22 @@ def doc_gen(API, BASE_URL):
     drone.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", True, True, False))
     # Operations
     # The server may need to get the state of the drone, or mechanics may get new state at certain intervals and send to server
-    drone.add_supported_op(HydraClassOp("GetState",
+    drone.add_supported_op(HydraClassOp("GetDrone",
                                         "GET",
                                         None,
-                                        "vocab:State",
+                                        "vocab:Drone",
                                         [{"statusCode": 404, "description": "Data not found"},
                                          {"statusCode": 200, "description": "State Returned"}]))
     # When new commands are issued, mechanics will need to change the state of the drone
-    drone.add_supported_op(HydraClassOp("UpdateState",
+    drone.add_supported_op(HydraClassOp("UpdateDrone",
                                         "POST",
-                                        "vocab:State",
+                                        "vocab:Drone",
                                         None,
                                         [{"statusCode": 200, "description": "State updated"}]))
 
     # Command Class
     # NOTE: Commands are stored in a collection. You may GET a command or you may DELETE it, there is not UPDATE.
-    command = HydraClass("Command", "Command", "Class for drone commands", endpoint=True)
+    command = HydraClass("Command", "Command", "Class for drone commands")
     command.add_supported_prop(HydraClassProp("http://schema.org/UpdateAction", "Update", False, True, False))
     command.add_supported_prop(HydraClassProp("vocab:State", "State", False, False, False))
     # Used by mechanics to get newly added commands
@@ -107,10 +107,10 @@ def doc_gen(API, BASE_URL):
 
 if __name__ == "__main__":
     dump = json.dumps(doc_gen("droneapi", "http://localhost/").generate(), indent=4, sort_keys=True)
-    doc = '''"""Generated API Documentation for Drone API using drone_doc_gen.py."""\n\ndrone_doc = %s''' % dump
+    doc = '''"""Generated API Documentation for Drone API using doc_gen.py."""\n\ndoc = %s''' % dump
     doc = doc.replace('true', '"true"')
     doc = doc.replace('false', '"false"')
     doc = doc.replace('null', '"null"')
-    f = open("drone_doc.py", "w")
+    f = open("doc.py", "w")
     f.write(doc)
     f.close()
