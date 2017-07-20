@@ -1,5 +1,5 @@
 from hydra import Resource, SCHEMA
-from mechanics.main import CENTRAL_SERVER_URL, DRONE1
+from mechanics.main import CENTRAL_SERVER_URL, DRONE1, CENTRAL_SERVER
 from mechanics.main import RES_CS
 from mechanics.main import gen_Message
 import json
@@ -12,11 +12,11 @@ def get_message_collection():
 
     body = json.loads(body)
     return body
+print(get_message_collection())
 
 def create_message(message):
     """Add a message object entity to the central server."""
-    message = gen_Message(message)
-    create_message_ = RES_CS.find_suitable_operation(SCHEMA.AddAction, CENTRAL_SERVER.MessageCollection)
+    create_message_ = RES_CS.find_suitable_operation(SCHEMA.AddAction, CENTRAL_SERVER.Message)
     resp, body = create_message_(message)
 
     assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
@@ -24,14 +24,5 @@ def create_message(message):
     print("Message created successfully.")
     return new_message
 
-
-## NOTE: id_ will be the IRI stored in Message Collection
-def delete_message(id_):
-    """Delete a order from the collection given order @id attribute."""
-    res = Resource.from_iri(CENTRAL_SERVER_URL + id_)
-    # name = i.value(SCHEMA.name)
-    resp, _ = i.find_suitable_operation(SCHEMA.DeleteAction)()
-    if resp.status // 100 != 2:
-        print("error deleting <%s>" % i.identifier)
-    else:
-        print("deleted <%s>" % i.identifier)
+message = gen_Message("Hello world")
+print(create_message(message))

@@ -9,10 +9,6 @@ RUN pip install -r requirements.txt
 
 RUN rm -rf *
 
-# Clone and install hydra-py ( will be available by name hydra)
-RUN git clone https://github.com/pchampin/hydra-py
-RUN pip install ./hydra-py/
-
 # Clone hydrus into hydrus_main
 RUN git clone https://github.com/xadahiya/hydrus/ hydrus_main
 
@@ -27,5 +23,6 @@ RUN python db_init.py
 
 # Move the apidoc to hydrus
 RUN mv api_docs/doc_gen.py hydrus_main/hydrus/metadata/
+RUN mv api_docs/doc.py hydrus_main/hydrus/metadata/
 
 ENV MESSAGE "Hail Hydra"

@@ -23,3 +23,5 @@ uritemplate==3.0.0
 uWSGI==2.0.13.1
 Werkzeug==0.12.2
 rdflib-jsonld==0.4.0
+
+-e git://github.com/pchampin/hydra-py.git#egg=hydra
