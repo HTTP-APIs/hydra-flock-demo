@@ -2,17 +2,25 @@
 from hydra import Resource, SCHEMA
 from rdflib import Namespace
 import json
+import os
 
-global CENTRAL_SERVER, DRONE1, CENTRAL_SERVER_URL
-CENTRAL_SERVER = Namespace('http://192.168.99.100:8081/api/vocab#')
-DRONE1 = Namespace('http://drone1/droneapi/vocab#')
-CENTRAL_SERVER_URL = "http://192.168.99.100:8081"
+CENTRAL_SERVER_URL = os.environ.get("CENTRAL_SERVER_URL", "localhost:8080")
+DRONE1_URL =  os.environ.get("DRONE1_URL", "localhost:8081")
+API_NAME = os.environ.get("API_NAME", "api")
 
-global RES_CS, RES_DRONE1
-the_iri_of_the_resource_cs = 'http://192.168.99.100:8081/api'
+global CENTRAL_SERVER, DRONE1, DRONE_URL
+CENTRAL_SERVER = Namespace( CENTRAL_SERVER_URL+ '/serverapi/vocab#')
+print(CENTRAL_SERVER)
+DRONE1 = Namespace(DRONE1_URL+'/droneapi/vocab#')
+# print(DRONE1)
+
+global RES_CS, RES_DRONE
+the_iri_of_the_resource_cs = CENTRAL_SERVER_URL+ '/serverapi'
+# print(the_iri_of_the_resource_cs)
 RES_CS = Resource.from_iri(the_iri_of_the_resource_cs)
 
-the_iri_of_the_resource_drone = 'http://drone1/droneapi'
+the_iri_of_the_resource_drone = DRONE1_URL+ '/droneapi'
+# print(the_iri_of_the_resource_drone)
 RES_DRONE1 = Resource.from_iri(the_iri_of_the_resource_drone)
 
 ## Methods related to Area

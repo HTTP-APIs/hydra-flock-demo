@@ -1,3 +1,5 @@
+-e git://github.com/andrejsab/hydra-py.git#egg=hydra
+
 aniso8601==1.2.1
 appdirs==1.4.3
 click==6.7
@@ -23,5 +25,3 @@ uritemplate==3.0.0
 uWSGI==2.0.13.1
 Werkzeug==0.12.2
 rdflib-jsonld==0.4.0
-
--e git://github.com/pchampin/hydra-py.git#egg=hydra

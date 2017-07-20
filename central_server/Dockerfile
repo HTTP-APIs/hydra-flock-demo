@@ -9,8 +9,14 @@ RUN pip install -r requirements.txt
 
 RUN rm -rf *
 
+
+# Clone and install hydra-py ( will be available by name hydra)
+RUN git clone https://github.com/andrejsab/hydra-py
+RUN pip install ./hydra-py/
+
+
 # Clone hydrus into hydrus_main
-RUN git clone https://github.com/xadahiya/hydrus/ hydrus_main
+RUN git clone -b develop https://github.com/HTTP-APIs/hydrus hydrus_main
 
 COPY  . /app/
 

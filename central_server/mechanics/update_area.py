@@ -9,7 +9,7 @@ def update_area(area):
     update_area_ = RES_CS.find_suitable_operation(
     operation_type=SCHEMA.UpdateAction, input_type=CENTRAL_SERVER.Area)
     resp, body = update_area_(area)
-    assert resp.status == 200, "%s %s" % (resp.status, resp.reason)
+    assert resp.status in [200, 201], "%s %s" % (resp.status, resp.reason)
 
     return Resource.from_iri(resp['location'])
 

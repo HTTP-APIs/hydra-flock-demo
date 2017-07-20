@@ -5,10 +5,12 @@ services:
     restart: always
     build: ./central_server/
     ports:
-      - "8085:80"
+      - "8080:80"
+    env_file:
+      - ./config.env
     environment:
       # - HYDRUS_SERVER_URL=http://localhost:8080/ ## For linux local
-      - HYDRUS_SERVER_URL=http://192.168.99.100:8085/ ## For windows 10
+      - HYDRUS_SERVER_URL=http://192.168.99.100:8080/ ## For windows 10
       # - HYDRUS_SERVER_URL=http://54.169.232.177:8080/
       - API_NAME=serverapi
       - DB_URL=postgresql://hydra:hailhydra@postgres_db:5432/hydrus
@@ -39,6 +41,8 @@ services:
     build: ./drone1/
     ports:
       - "8081:80"
+    env_file:
+      - ./config.env
     environment:
       # - HYDRUS_SERVER_URL=http://localhost:8081/ ## For linux local
       - HYDRUS_SERVER_URL=http://192.168.99.100:8081/ ## For windows 10

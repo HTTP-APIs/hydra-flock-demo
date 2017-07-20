@@ -1,4 +1,4 @@
-from api_docs.doc import doc
+from hydrus.metadata.doc import doc
 from hydrus.data.doc_parse import get_classes, insert_classes
 from hydrus.data.db_models import Base, engine
 from sqlalchemy.orm import sessionmaker
@@ -8,6 +8,7 @@ def main():
     """ Initialize the drone database."""
     # Drop database if exists and create a new one.
     print("Droping database if exist")
+
     Base.metadata.drop_all(engine)
 
     print("Creating models....")

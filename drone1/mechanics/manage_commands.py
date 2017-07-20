@@ -8,14 +8,14 @@ def get_command_collection():
     """Get command collection from the drone server."""
     get_command_collection_ = RES_DRONE.find_suitable_operation(None, None, DRONE1.CommandCollection)
     resp, body = get_command_collection_()
-    assert resp.status == 200, "%s %s" % (resp.status, resp.reason)
+    assert resp.status in [200, 201], "%s %s" % (resp.status, resp.reason)
 
-    body = json.loads(body)
+    body = json.loads(body.decode('utf-8'))
     return body
 
-# print(get_command_collection())
+print(get_command_collection())
 
-state = gen_state(-1000, "50", "North", "1,1", "Active", 100)
+state = gen_State(-1000, "50", "North", "1,1", "Active", 100)
 
 def gen_command(drone_id, state):
     """Create a command entity."""
@@ -26,19 +26,19 @@ def gen_command(drone_id, state):
     }
     return command
 
-# command = gen_command(123, state)
+command = gen_command(123, state)
 
 def add_command(command):
     """Add command to drone server."""
     add_command_ = RES_DRONE.find_suitable_operation(SCHEMA.AddAction, DRONE1.Command)
     resp, body = add_command_(command)
 
-    assert resp.status == 201, "%s %s" % (resp.status, resp.reason)
+    assert resp.status in [200, 201], "%s %s" % (resp.status, resp.reason)
     new_command = Resource.from_iri(resp['location'])
     print("Command posted successfully.")
     return new_command
 
-# print(add_command(command))
+print(add_command(command))
 
 ## NOTE: id_ will be the IRI stored in Drone Collection
 

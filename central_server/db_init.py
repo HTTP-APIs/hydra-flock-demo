@@ -1,4 +1,4 @@
-from api_docs.doc import doc
+from hydrus.metadata.doc import doc
 from hydrus.data.doc_parse import get_classes, insert_classes
 from hydrus.data.db_models import Base, engine
 from sqlalchemy.orm import sessionmaker
