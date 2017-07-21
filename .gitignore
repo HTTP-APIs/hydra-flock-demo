@@ -101,3 +101,7 @@ ENV/
 .mypy_cache/
 
 .idea/
+
+hydrus/
+sim_controller/
+sim_drone/

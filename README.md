@@ -2,19 +2,23 @@
 
 This is part of the `hydra-flock-simulation` test-bed. Check the `hydra-flock-simulation` for cloud deployment of the full test-bed.
 
-FOR LOCAL TESTS:
+## Instructions to run for local development and tests
 
-Running tests:
+Developing and testing:
 * create and activate a virtualenv
 * upgrade pip and setuptools
 * check if `python3-dev` is installed
 * run `pip install -r requirements.txt`
+* `chmod +x bootstrap-dev.sh`
+* `./bootstrap-dev.sh`
+
+Then:
 * run `python run_simulation.py`
 
 Different components are cloned in the repository and run locally on different ports.
 
 
-## Instructions to Run
+## Instructions to run with Docker
 - Clone the repo to your local computer using `git clone`.
 - Build using `docker-compose build` ( For a fresh build use `docker-compose build --no-cache`).
 - Start the docker containers using `docker-compose up`
