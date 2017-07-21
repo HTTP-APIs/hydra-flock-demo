@@ -9,6 +9,7 @@ Running tests:
 * upgrade pip and setuptools
 * check if `python3-dev` is installed
 * run `pip install -r requirements.txt`
+* run `python run_simulation.py`
 
 Different components are cloned in the repository and run locally on different ports.
 
