@@ -47,7 +47,7 @@ class TestDroneRequests(unittest.TestCase):
         ## 404 if drone is not initialized use mechanics.drone_init to initialize
         assert request_get.status_code in [200, 404]
         assert request_put.status_code == 405
-        assert request_post.status_code == 200
+        assert request_post.status_code in [200,201]
         assert request_delete.status_code == 405
 
     def test_request_datastream(self):
@@ -61,7 +61,7 @@ class TestDroneRequests(unittest.TestCase):
         ## 404 if drone is not initialized use mechanics.drone_init to initialize
         assert request_get.status_code in [200,404]
         assert request_put.status_code == 405
-        assert request_post.status_code == 200
+        assert request_post.status_code in [200,201]
         assert request_delete.status_code == 405
 
     def test_request_command_collection(self):
