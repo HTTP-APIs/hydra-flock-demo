@@ -4,23 +4,24 @@ from rdflib import Namespace
 import json
 import os
 
-CENTRAL_SERVER_URL = os.environ.get("CENTRAL_SERVER_URL", "localhost:8080")
-DRONE1_URL =  os.environ.get("DRONE1_URL", "localhost:8081")
+CENTRAL_SERVER_URL_ = os.environ.get("CENTRAL_SERVER_URL", "localhost:8080")
+DRONE1_URL_ =  os.environ.get("DRONE1_URL", "localhost:8081")
 API_NAME = os.environ.get("API_NAME", "api")
 
 global CENTRAL_SERVER, DRONE1, DRONE_URL
-CENTRAL_SERVER = Namespace( CENTRAL_SERVER_URL+ '/serverapi/vocab#')
+CENTRAL_SERVER = Namespace( CENTRAL_SERVER_URL_+ '/serverapi/vocab#')
 print(CENTRAL_SERVER)
-DRONE1 = Namespace(DRONE1_URL+'/droneapi/vocab#')
+DRONE1 = Namespace(DRONE1_URL_+'/droneapi/vocab#')
 # print(DRONE1)
-DRONE_URL = DRONE1_URL
+DRONE_URL = http://drone1
+CENTRAL_SERVER_URL = http://central_server
 
 global RES_CS, RES_DRONE
-the_iri_of_the_resource_cs = CENTRAL_SERVER_URL+ '/serverapi'
+the_iri_of_the_resource_cs = 'http://central_server/serverapi'
 # print(the_iri_of_the_resource_cs)
 RES_CS = Resource.from_iri(the_iri_of_the_resource_cs)
 
-the_iri_of_the_resource_drone = DRONE1_URL+ '/droneapi'
+the_iri_of_the_resource_drone = 'http://drone1/droneapi'
 # print(the_iri_of_the_resource_drone)
 RES_DRONE = Resource.from_iri(the_iri_of_the_resource_drone)
 
