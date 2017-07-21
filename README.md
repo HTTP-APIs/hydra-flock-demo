@@ -15,3 +15,11 @@
     
 
 ### NOTE: You can run different files in `mechanics` folders of both the `Central_server` and `Drone1` simply by typing `python <filename>` in their respective containers, to understand and test how basic operations in simulation will work using hydra-py client.
+
+## Running tests
+- For the Central Server
+    - Connect to Central server docker container using `docker exec -i -t hydraflockdemo_central_server_1 /bin/bash`
+    - Run tests using `python tests/test_central_server_endpoints.py`
+- For Drone
+    - Connect to drone1 docker container using `docker exec -i -t hydraflockdemo_drone1_1 /bin/bash`
+    - Run `python tests/test_drone_endpoints.py`
