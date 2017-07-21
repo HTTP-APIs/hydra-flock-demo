@@ -1,5 +1,17 @@
 # hydra-flock-demo
 
+This is part of the `hydra-flock-simulation` test-bed. Check the `hydra-flock-simulation` for cloud deployment of the full test-bed.
+
+FOR LOCAL TESTS:
+
+Running tests:
+* create and activate a virtualenv
+* upgrade pip and setuptools
+* check if `python3-dev` is installed
+* run `pip install -r requirements.txt`
+
+Different components are cloned in the repository and run locally on different ports.
+
 
 ## Instructions to Run
 - Clone the repo to your local computer using `git clone`.

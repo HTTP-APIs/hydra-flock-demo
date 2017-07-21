@@ -1,0 +1,2 @@
+git+git://github.com/HTTP-APIs/hydra-flock-central-controller.git -t .
+git+git://github.com/HTTP-APIs/hydra-flock-drone.git -t .
