@@ -58,7 +58,7 @@ def gen_State(drone_id, battery, direction, position, sensor_status, speed):
     }
     return state
 
-# state = gen_state(-1000, "50", "North", "1,1", "Active", 100)
+# state = gen_State(-1000, "50", "North", "1,1", "Active", 100)
 # print(state)
 
 def gen_Command(state):

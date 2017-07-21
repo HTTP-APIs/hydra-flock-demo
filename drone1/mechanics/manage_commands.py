@@ -2,6 +2,7 @@ from hydra import Resource, SCHEMA
 from mechanics.main import DRONE_URL, DRONE1
 from mechanics.main import RES_DRONE
 from mechanics.main import gen_State
+from mechanics.main import gen_command
 import json
 
 def get_command_collection():
@@ -17,16 +18,7 @@ print(get_command_collection())
 
 state = gen_State(-1000, "50", "North", "1,1", "Active", 100)
 
-def gen_command(drone_id, state):
-    """Create a command entity."""
-    command = {
-        "@type" : "Command",
-        "DroneID" : drone_id,
-        "State": state
-    }
-    return command
-
-command = gen_command(123, state)
+command = gen_Command(123, state)
 
 def add_command(command):
     """Add command to drone server."""

@@ -8,7 +8,7 @@ API_NAME = os.environ.get("API_NAME", "api")
 
 global CENTRAL_SERVER, DRONE1, DRONE_URL
 CENTRAL_SERVER = Namespace("http://central_server/serverapi/vocab#")
-print(CENTRAL_SERVER)
+# print(CENTRAL_SERVER)
 DRONE1 = Namespace("http://drone1/droneapi/vocab#")
 # print(DRONE1)
 DRONE_URL = "http://drone1"
@@ -28,7 +28,7 @@ def get_drone_default():
     """Returns a default drone object with DroneID -1 for initialization."""
     drone_default = {
         "@type": "Drone",
-        "DroneID": -10001,
+        "DroneID": -1000,
         "name": "Drone1",
         "model": "xyz",
         "MaxSpeed": 50,
@@ -157,4 +157,14 @@ def get_state():
     return drone_state
 
 # print(get_state())
-## Orders related methods
+## Command related methods
+
+
+def gen_Command(drone_id, state):
+    """Create a command entity."""
+    command = {
+        "@type" : "Command",
+        "DroneID" : drone_id,
+        "State": state
+    }
+    return command

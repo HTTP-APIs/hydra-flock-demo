@@ -66,7 +66,7 @@ def doc_gen(API, BASE_URL):
 
 
     # Logs to be accessed mostly by the GUI. Mechanics should add logs for every event.
-    log = HydraClass("vocab:LogEntry", "LogEntry", "Class for a log entry")
+    log = HydraClass("LogEntry", "LogEntry", "Class for a log entry")
     # Subject
     log.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", True, True, False))
     # Predicate
