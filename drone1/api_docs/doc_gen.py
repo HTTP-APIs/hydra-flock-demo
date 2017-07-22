@@ -28,12 +28,12 @@ def doc_gen(API, BASE_URL):
     # GET will return current State. POST will update the State.
     drone = HydraClass("Drone", "Drone", "Class for a drone", endpoint=True)
     # Properties
-    drone.add_supported_prop(HydraClassProp("vocab:State", "DroneState", False, False , True))
-    drone.add_supported_prop(HydraClassProp("http://schema.org/name", "name", False, False , True))
-    drone.add_supported_prop(HydraClassProp("http://schema.org/model", "model", False, False , True))
-    drone.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "MaxSpeed", False, False , True))
-    drone.add_supported_prop(HydraClassProp("http://schema.org/device", "Sensor", False, False , True))
-    drone.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", False, False , True))
+    drone.add_supported_prop(HydraClassProp("vocab:State", "DroneState", False, False, True))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/name", "name", False, False, True))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/model", "model", False, False, True))
+    drone.add_supported_prop(HydraClassProp("http://auto.schema.org/speed", "MaxSpeed", False, False, True))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/device", "Sensor", False, False, True))
+    drone.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", False, False, True))
     # Operations
     drone.add_supported_op(HydraClassOp("GetDrone",
                                         "GET",
@@ -51,8 +51,8 @@ def doc_gen(API, BASE_URL):
     # Command Class
     # NOTE: Commands are stored in a collection. You may GET a command or you may DELETE it, there is not UPDATE.
     command = HydraClass("Command", "Command", "Class for drone commands")
-    command.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", False, False , True))
-    command.add_supported_prop(HydraClassProp("vocab:State", "State", False, False , True))
+    command.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", False, False, True))
+    command.add_supported_prop(HydraClassProp("vocab:State", "State", False, False, True))
     # Used by mechanics to get newly added commands
     command.add_supported_op(HydraClassOp("GetCommand",
                                           "GET",
@@ -78,20 +78,20 @@ def doc_gen(API, BASE_URL):
     # The server will read[GET] the data when it needs it. No need for collections. Only one instance showing current reading of sensor
     # The URI is /api/Data
     datastream = HydraClass("Datastream", "Datastream", "Class for a data entry from drone sensors", endpoint=True)
-    datastream.add_supported_prop(HydraClassProp("http://schema.org/QuantitativeValue", "Temperature", False, False , True))
-    datastream.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", False, False , True))
-    datastream.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", False, False , True))
+    datastream.add_supported_prop(HydraClassProp("http://schema.org/QuantitativeValue", "Temperature", False, False, True))
+    datastream.add_supported_prop(HydraClassProp("http://schema.org/identifier", "DroneID", False, False, True))
+    datastream.add_supported_prop(HydraClassProp("http://schema.org/geo", "Position", False, False, True))
     datastream.add_supported_op(HydraClassOp("GetDatastream",
-                                       "GET",
-                                       None,
-                                       "vocab:Datastream",
-                                       [{"statusCode": 404, "description": "Datastream not found"},
-                                        {"statusCode": 200, "description": "Datastream returned"}]))
+                                             "GET",
+                                             None,
+                                             "vocab:Datastream",
+                                             [{"statusCode": 404, "description": "Datastream not found"},
+                                              {"statusCode": 200, "description": "Datastream returned"}]))
     datastream.add_supported_op(HydraClassOp("UpdateDatastream",
-                                       "POST",
-                                       "vocab:Datastream",
-                                       None,
-                                       [{"statusCode": 200, "description": "Datastream updated"}]))
+                                             "POST",
+                                             "vocab:Datastream",
+                                             None,
+                                             [{"statusCode": 200, "description": "Datastream updated"}]))
 
     api_doc.add_supported_class(state, collection=False)
     api_doc.add_supported_class(drone, collection=False)
@@ -105,11 +105,11 @@ def doc_gen(API, BASE_URL):
 
 
 if __name__ == "__main__":
-    dump = json.dumps(drone_doc("droneapi", "http://localhost/").generate(), indent=4, sort_keys=True)
+    dump = json.dumps(doc_gen("droneapi", "http://localhost/").generate(), indent=4, sort_keys=True)
     doc = '''"""Generated API Documentation for Drone API using drone_doc_gen.py."""\n\ndoc = %s''' % dump
     doc = doc.replace('true', '"true"')
     doc = doc.replace('false', '"false"')
     doc = doc.replace('null', '"null"')
-    f = open("drone_doc.py", "w")
+    f = open("doc.py", "w")
     f.write(doc)
     f.close()

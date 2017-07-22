@@ -1,11 +1,12 @@
-from hydrus.metadata.doc import doc
-from hydrus.data.doc_parse import get_classes, insert_classes
+"""Initialize database in drone1."""
+from api_docs.doc_gen import doc_gen
+from hydrus.data.doc_parse import get_classes, insert_classes, insert_properties, get_all_properties
 from hydrus.data.db_models import Base, engine
 from sqlalchemy.orm import sessionmaker
 
 
 def main():
-    """ Initialize the drone database."""
+    """Initialize the drone database."""
     # Drop database if exists and create a new one.
     print("Droping database if exist")
 
@@ -20,10 +21,19 @@ def main():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    doc_classes = get_classes(doc)
+    doc = doc_gen("dummy", "dummy")
+
+    doc_classes = get_classes(doc.generate())
+    doc_properties = get_all_properties(doc_classes)
+
     insert_classes(doc_classes, session=session)
     print("Classes inserted successfully.")
+
+    insert_properties(doc_properties, session=session)
+    print("Properties inserted successfully.")
+
     return None
+
 
 if __name__ == "__main__":
     main()

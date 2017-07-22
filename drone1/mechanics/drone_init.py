@@ -5,10 +5,12 @@ from hydra import SCHEMA
 from mechanics.main import get_drone, get_drone_default, update_drone
 from mechanics.main import gen_Datastream, update_datastream, get_drone_id
 
+
 def init_drone_locally():
     """Initialize the drone locally with Negative identifier."""
     drone = get_drone_default()
     update_drone(drone)
+
 
 def add_drone(drone):
     """Add the drone object to the central server and return Id."""
@@ -19,6 +21,7 @@ def add_drone(drone):
     drone_id = resp['location'].split("/")[-1]
     print(drone_id)
     return drone_id
+
 
 def update_drone_id(id_):
     """Update the drone identifier."""
@@ -31,6 +34,7 @@ def update_drone_id(id_):
     update_drone(drone)
     print("DroneID updated successfully", id_)
     return None
+
 
 def init_drone():
     """Initialize drone."""
@@ -48,12 +52,14 @@ def init_drone():
     print("Drone initialized successfully!")
     return None
 
+
 def init_datastream_locally():
     """Initialize the datasteam locally."""
     datastream = gen_Datastream(100, "0,0", get_drone_id())
     update_datastream(datastream)
     print("Datastream initialized locally")
     return None
+
 
 if __name__ == "__main__":
     init_drone()

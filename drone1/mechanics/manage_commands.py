@@ -1,9 +1,12 @@
+"""Handle operations related to new commands for the drone."""
+
 from hydra import Resource, SCHEMA
 from mechanics.main import DRONE_URL, DRONE1
 from mechanics.main import RES_DRONE
 from mechanics.main import gen_State
-from mechanics.main import gen_command
+from mechanics.main import gen_Command
 import json
+
 
 def get_command_collection():
     """Get command collection from the drone server."""
@@ -13,12 +16,8 @@ def get_command_collection():
 
     body = json.loads(body.decode('utf-8'))
     return body
+# print(get_command_collection())
 
-print(get_command_collection())
-
-state = gen_State(-1000, "50", "North", "1,1", "Active", 100)
-
-command = gen_Command(123, state)
 
 def add_command(command):
     """Add command to drone server."""
@@ -29,11 +28,10 @@ def add_command(command):
     new_command = Resource.from_iri(resp['location'])
     print("Command posted successfully.")
     return new_command
+# print(add_command(command))
 
-print(add_command(command))
 
-## NOTE: id_ will be the IRI stored in Drone Collection
-
+# NOTE: id_ will be the IRI stored in Drone Collection
 def delete_command(id_):
     """Delete a command from the collection given command @id attribute."""
     try:
@@ -45,5 +43,9 @@ def delete_command(id_):
         else:
             return "deleted <%s>" % i.identifier
     except:
-        return {404: "Resource with Id %s not found!" %(id_,)}
+        return {404: "Resource with Id %s not found!" % (id_,)}
 # print(delete_command("/api/CommandCollection/175"))
+
+
+state = gen_State(-1000, "50", "North", "1,1", "Active", 100)
+command = gen_Command(123, state)

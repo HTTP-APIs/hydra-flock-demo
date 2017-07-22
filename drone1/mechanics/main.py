@@ -1,4 +1,4 @@
-""" Handles main configuration for the drone."""
+"""Handle main configuration for the drone."""
 from hydra import Resource, SCHEMA
 from rdflib import Namespace
 import json
@@ -23,9 +23,10 @@ the_iri_of_the_resource_drone = "http://drone1/droneapi"
 # print(the_iri_of_the_resource_drone)
 RES_DRONE = Resource.from_iri(the_iri_of_the_resource_drone)
 
-### Drone related methods
+
+# Drone related methods
 def get_drone_default():
-    """Returns a default drone object with DroneID -1 for initialization."""
+    """Return a default drone object with DroneID -1 for initialization."""
     drone_default = {
         "@type": "Drone",
         "DroneID": -1000,
@@ -49,7 +50,8 @@ def get_drone_default():
 def get_drone():
     """Get the drone object from drone server."""
     get_drone_ = RES_DRONE.find_suitable_operation(
-        operation_type=None, input_type=None, output_type=DRONE1.Drone)
+                 operation_type=None, input_type=None,
+                 output_type=DRONE1.Drone)
     resp, body = get_drone_()
     assert resp.status in [200, 201], "%s %s" % (resp.status, resp.reason)
     drone = json.loads(body.decode('utf-8'))
@@ -57,37 +59,40 @@ def get_drone():
     drone.pop("@context", None)
     return drone
 
+
 def get_drone_id():
     """Return current drone id from drone server."""
     drone = get_drone()
     return int(drone["DroneID"])
-
 # print(get_drone_id())
+
 
 def update_drone(drone):
     """Update the drone object on drone server."""
     update_drone_ = RES_DRONE.find_suitable_operation(
-    operation_type=SCHEMA.UpdateAction, input_type=DRONE1.Drone)
+                    operation_type=SCHEMA.UpdateAction,
+                    input_type=DRONE1.Drone)
     resp, body = update_drone_(drone)
     assert resp.status in [200, 201], "%s %s" % (resp.status, resp.reason)
 
     return Resource.from_iri(resp['location'])
-
 # print(update_drone(get_drone_default()))
-## Datastream related methods
+
+
+# Datastream related methods
 def gen_Datastream(temperature, position, drone_id):
     """Generate a datastream objects."""
     datastream = {
         "@type": "Datastream",
-        "Temperature":temperature,
-        "Position":position,
-        "DroneID":drone_id,
+        "Temperature": temperature,
+        "Position": position,
+        "DroneID": drone_id,
     }
 
     return datastream
-
 # datastream = gen_datastream(100, "0,0", get_drone_id())
 # print(datastream)
+
 
 def update_datastream(datastream):
     """Update the drone datastream on drone server."""
@@ -97,8 +102,8 @@ def update_datastream(datastream):
     assert resp.status in [200, 201], "%s %s" % (resp.status, resp.reason)
 
     return Resource.from_iri(resp['location'])
-
 # print(update_datastream(datastream))
+
 
 def get_datastream():
     """Get the drone datastream from drone server."""
@@ -108,45 +113,47 @@ def get_datastream():
     assert resp.status in [200, 201], "%s %s" % (resp.status, resp.reason)
 
     datastream = json.loads(body.decode('utf-8'))
-    ## remove extra contexts from datastream
+    # remove extra contexts from datastream
     datastream.pop("@context", None)
     datastream.pop("@id", None)
     return datastream
 
 # print(get_datastream())
-## Status related methods
 
+
+# Status related methods
 def gen_State(drone_id, battery, direction, position, sensor_status, speed):
     """Generate a State objects."""
     state = {
-        "@type":"State",
+        "@type": "State",
         "DroneID": drone_id,
         "Battery": battery,
-        "Direction":direction,
+        "Direction": direction,
         "Position": position,
         "SensorStatus": sensor_status,
         "Speed": speed,
     }
     return state
-
 # state = gen_state(-1000, "50", "North", "1,1", "Active", 100)
 # print(state)
+
 
 def update_state(state):
     """Update the drone state on drone server."""
     drone = get_drone()
     if int(drone["DroneID"]) == state["DroneID"]:
-        ## Remove the DroneID key from state
+        # Remove the DroneID key from state
         state.pop("DroneID", None)
 
-        ## Update the drone state
+        # Update the drone state
         drone["DroneState"] = state
         update_drone(drone)
         print("Drone state updated successfully.")
     else:
-        print("ERROR: DroneID %s not valid." %(state["DroneID"]))
+        print("ERROR: DroneID %s not valid." % (state["DroneID"]))
 
 # print(update_state(state))
+
 
 def get_state():
     """Get the current drone state from the drone server."""
@@ -157,14 +164,14 @@ def get_state():
     return drone_state
 
 # print(get_state())
-## Command related methods
+# Command related methods
 
 
 def gen_Command(drone_id, state):
     """Create a command entity."""
     command = {
-        "@type" : "Command",
-        "DroneID" : drone_id,
+        "@type": "Command",
+        "DroneID": drone_id,
         "State": state
     }
     return command

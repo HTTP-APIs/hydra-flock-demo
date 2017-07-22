@@ -1,8 +1,10 @@
+"""Operations for managing messages."""
 from hydra import Resource, SCHEMA
-from mechanics.main import CENTRAL_SERVER_URL, DRONE1, CENTRAL_SERVER
+from mechanics.main import CENTRAL_SERVER
 from mechanics.main import RES_CS
 from mechanics.main import gen_Message
 import json
+
 
 def get_message_collection():
     """Get order collection from the central server."""
@@ -12,7 +14,7 @@ def get_message_collection():
 
     body = json.loads(body.decode('utf-8'))
     return body
-print(get_message_collection())
+
 
 def create_message(message):
     """Add a message object entity to the central server."""
@@ -24,5 +26,8 @@ def create_message(message):
     print("Message created successfully.")
     return new_message
 
-message = gen_Message("Hello world")
-print(create_message(message))
+
+if __name__ == "__main__":
+    print(get_message_collection())
+    message = gen_Message("Hello world")
+    print(create_message(message))
