@@ -1,26 +1,27 @@
-""" Tests for checking if all the drone endpoints are working properly."""
+"""Tests for checking if all the drone endpoints are working properly."""
 
 import unittest
 import requests
 import json
-import os
 from mechanics.main import get_drone_default
 from mechanics.main import gen_Command, gen_State, gen_Datastream
 
-## FOR OUTSIDE THE CONTAINER
+# FOR OUTSIDE THE CONTAINER
 # DRONE_URL = "http://192.168.99.100:8081/" ## Windows
 # DRONE_URL = "http://localhost:8081/" ##Linux
 
-## FOR INSIDE THE CONTAINER
+# FOR INSIDE THE CONTAINER
 DRONE_URL = "http://drone1/"
 
+
 class TestDroneRequests(unittest.TestCase):
+    """Test for drone endpoints."""
 
     def test_request_vocab(self):
         """Test the drone vocab."""
         request_get = requests.get(DRONE_URL + 'droneapi/vocab')
-        request_put = requests.put(DRONE_URL + 'droneapi/vocab', data=json.dumps(dict(foo = 'bar')))
-        request_post = requests.post(DRONE_URL + 'droneapi/vocab', data=json.dumps(dict(foo = 'bar')))
+        request_put = requests.put(DRONE_URL + 'droneapi/vocab', data=json.dumps(dict(foo='bar')))
+        request_post = requests.post(DRONE_URL + 'droneapi/vocab', data=json.dumps(dict(foo='bar')))
         request_delete = requests.delete(DRONE_URL + 'droneapi/vocab')
         assert request_get.status_code == 200
         assert request_put.status_code == 405
@@ -30,8 +31,8 @@ class TestDroneRequests(unittest.TestCase):
     def test_request_entrypoint(self):
         """Test the drone entrypoint."""
         request_get = requests.get(DRONE_URL + 'droneapi/')
-        request_put = requests.put(DRONE_URL + 'droneapi/', data=json.dumps(dict(foo = 'bar')))
-        request_post = requests.post(DRONE_URL + 'droneapi/', data=json.dumps(dict(foo = 'bar')))
+        request_put = requests.put(DRONE_URL + 'droneapi/', data=json.dumps(dict(foo='bar')))
+        request_post = requests.post(DRONE_URL + 'droneapi/', data=json.dumps(dict(foo='bar')))
         request_delete = requests.delete(DRONE_URL + 'droneapi/')
         assert request_get.status_code == 200
         assert request_put.status_code == 405
@@ -44,10 +45,10 @@ class TestDroneRequests(unittest.TestCase):
         request_put = requests.put(DRONE_URL + 'droneapi/Drone', data=json.dumps(get_drone_default()))
         request_post = requests.post(DRONE_URL + 'droneapi/Drone', data=json.dumps(get_drone_default()))
         request_delete = requests.delete(DRONE_URL + 'droneapi/Drone')
-        ## 404 if drone is not initialized use mechanics.drone_init to initialize
+        # 404 if drone is not initialized use mechanics.drone_init to initialize
         assert request_get.status_code in [200, 404]
         assert request_put.status_code == 405
-        assert request_post.status_code in [200,201]
+        assert request_post.status_code in [200, 201]
         assert request_delete.status_code == 405
 
     def test_request_datastream(self):
@@ -58,10 +59,10 @@ class TestDroneRequests(unittest.TestCase):
         request_put = requests.put(DRONE_URL + 'droneapi/Datastream', data=json.dumps(datastream))
         request_post = requests.post(DRONE_URL + 'droneapi/Datastream', data=json.dumps(datastream))
         request_delete = requests.delete(DRONE_URL + 'droneapi/Datastream')
-        ## 404 if drone is not initialized use mechanics.drone_init to initialize
-        assert request_get.status_code in [200,404]
+        # 404 if drone is not initialized use mechanics.drone_init to initialize
+        assert request_get.status_code in [200, 404]
         assert request_put.status_code == 405
-        assert request_post.status_code in [200,201]
+        assert request_post.status_code in [200, 201]
         assert request_delete.status_code == 405
 
     def test_request_command_collection(self):
@@ -77,7 +78,6 @@ class TestDroneRequests(unittest.TestCase):
         assert request_put.status_code == 201
         assert request_post.status_code == 405
         assert request_delete.status_code == 405
-
 
     def test_request_command_collection_wrong_type_put(self):
         """Test the /CommandCollection endpoint PUT with wrong type object."""

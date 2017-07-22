@@ -1,13 +1,9 @@
+"""Operation related to datastream post operations."""
 from mechanics.main import RES_CS, RES_DRONE
 from mechanics.main import CENTRAL_SERVER, DRONE1
 from mechanics.main import get_datastream
 from hydra import SCHEMA, Resource
 
-
-
-
-datastream = get_datastream()
-print(datastream)
 
 def send_datastream(datastream):
     """Post the drone current datastream to the central server."""
@@ -20,4 +16,6 @@ def send_datastream(datastream):
     return new_datastream
 
 
+datastream = get_datastream()
+print(datastream)
 print(send_datastream(datastream))

@@ -1,7 +1,6 @@
-""" Handles main configuration for the Central server."""
-from hydra import Resource, SCHEMA
+"""Handle main configuration for the Central server."""
+from hydra import Resource
 from rdflib import Namespace
-import json
 import os
 
 
@@ -24,47 +23,50 @@ the_iri_of_the_resource_drone = "http://drone1/droneapi"
 # print(the_iri_of_the_resource_drone)
 RES_DRONE1 = Resource.from_iri(the_iri_of_the_resource_drone)
 
-## Methods related to Area
+
+# Methods related to Area
 def gen_Area(top_left, bottom_right):
     """Generate a Area object."""
     Area = {
-        "@type":"Area",
-        "TopLeft":top_left,
-        "BottomRight":bottom_right
+        "@type": "Area",
+        "TopLeft": top_left,
+        "BottomRight": bottom_right
     }
     return Area
-
 # area = gen_Area("0,0", "5,5")
-## Methods related to Messages
+
+
+# Methods related to Messages
 def gen_Message(message):
+    """Create a new Message."""
     message = {
-        "@type":"Message",
-        "MessageString":message,
+        "@type": "Message",
+        "MessageString": message,
     }
     return message
 
-## Methods related to commands
 
+# Methods related to commands
 def gen_State(drone_id, battery, direction, position, sensor_status, speed):
     """Generate a State objects."""
     state = {
-        "@type":"State",
+        "@type": "State",
         "DroneID": drone_id,
         "Battery": battery,
-        "Direction":direction,
+        "Direction": direction,
         "Position": position,
         "SensorStatus": sensor_status,
         "Speed": speed,
     }
     return state
-
 # state = gen_State(-1000, "50", "North", "1,1", "Active", 100)
 # print(state)
+
 
 def gen_Command(state):
     """Generate a Command object."""
     command = {
-        "@type":"Command",
+        "@type": "Command",
         "State": state
     }
     return command
