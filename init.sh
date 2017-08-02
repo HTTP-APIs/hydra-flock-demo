@@ -2,6 +2,11 @@ echo "Starting Simulation Central Controller"
 python sim_controller/flock_controller/main.py &
 echo "Central Controller started successfully!"
 
+## Wait for 2 seconds.
+/bin/sleep 2
+
+
+
 echo "Initializing Central Controller Location"
 python sim_controller/flock_controller/mechanics/update_location.py
 
