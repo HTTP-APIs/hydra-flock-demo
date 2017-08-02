@@ -102,6 +102,11 @@ ENV/
 
 .idea/
 
+src/
 hydrus/
 sim_controller/
 sim_drone/
+sim_gui/
+
+# Db files
+*.db
