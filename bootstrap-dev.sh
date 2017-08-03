@@ -17,3 +17,19 @@ git clone http://github.com/xadahiya/hydra-flock-drone.git sim_drone2
 git clone http://github.com/xadahiya/hydra-flock-drone.git sim_drone3
 # Drone4
 git clone http://github.com/xadahiya/hydra-flock-drone.git sim_drone4
+
+## Updating drone settings
+echo "Updating drone settings"
+cp drone_settings/drone1_settings.py sim_drone1/flock_drone/settings.py
+cp drone_settings/drone2_settings.py sim_drone2/flock_drone/settings.py
+cp drone_settings/drone3_settings.py sim_drone3/flock_drone/settings.py
+cp drone_settings/drone4_settings.py sim_drone4/flock_drone/settings.py
+echo "Done!"
+
+echo "Generating new docs"
+python sim_drone1/flock_drone/api_docs/doc_gen.py
+python sim_drone2/flock_drone/api_docs/doc_gen.py
+python sim_drone3/flock_drone/api_docs/doc_gen.py
+python sim_drone4/flock_drone/api_docs/doc_gen.py
+python sim_controller/flock_controller/api_docs/doc_gen.py
+echo "Done!"
