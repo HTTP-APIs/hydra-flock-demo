@@ -54,13 +54,13 @@ python sim_drone4/flock_drone/mechanics/drone_init.py
 /bin/sleep 2
 
 echo "Starting Drone1 main mechanics Loop"
-python sim_drone1/flock_drone/mechanics/lisetner.py &
+python sim_drone1/flock_drone/mechanics/listener.py &
 
 echo "Starting Drone2 main mechanics Loop"
-python sim_drone2/flock_drone/mechanics/lisetner.py &
+python sim_drone2/flock_drone/mechanics/listener.py &
 
 echo "Starting Drone3 main mechanics Loop"
-python sim_drone3/flock_drone/mechanics/lisetner.py &
+python sim_drone3/flock_drone/mechanics/listener.py &
 
 echo "Starting Drone4 main mechanics Loop"
-python sim_drone4/flock_drone/mechanics/lisetner.py &
+python sim_drone4/flock_drone/mechanics/listener.py &
