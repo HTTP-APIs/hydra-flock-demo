@@ -1,4 +1,4 @@
-echo "Removing directories in exist"
+echo "Removing directories if exist"
 rm -rf hydrus sim_controller sim_gui sim_drone1 sim_drone2 sim_drone3 sim_drone4
 
 echo "Install requirements..."
