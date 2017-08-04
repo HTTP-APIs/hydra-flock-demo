@@ -31,5 +31,4 @@ python sim_drone1/flock_drone/api_docs/doc_gen.py
 python sim_drone2/flock_drone/api_docs/doc_gen.py
 python sim_drone3/flock_drone/api_docs/doc_gen.py
 python sim_drone4/flock_drone/api_docs/doc_gen.py
-python sim_controller/flock_controller/api_docs/doc_gen.py
 echo "Done!"
