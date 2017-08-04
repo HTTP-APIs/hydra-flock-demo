@@ -99,3 +99,18 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+.idea/
+
+src/
+hydrus/
+sim_controller/
+sim_drone/
+sim_drone1/
+sim_drone2/
+sim_drone3/
+sim_drone4/
+sim_gui/
+
+# Db files
+*.db
