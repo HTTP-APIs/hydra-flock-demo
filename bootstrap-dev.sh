@@ -5,18 +5,18 @@ echo "Install requirements..."
 pip install -r requirements.txt
 #
 
-git clone -b develop https://github.com/HTTP-APIs/hydrus.git hydrus
-git clone https://github.com/xadahiya/hydra-flock-central-controller.git sim_controller
-git clone https://github.com/xadahiya/hydra-flock-gui.git sim_gui
+git clone -b develop https://github.com/chrizandr/hydrus.git hydrus
+git clone -b develop --single-branch https://github.com/chrizandr/hydra-flock-central-controller.git sim_controller
+git clone -b develop --single-branch https://github.com/chrizandr/hydra-flock-gui.git sim_gui
 
 # Drone1
-git clone https://github.com/xadahiya/hydra-flock-drone.git sim_drone1
+git clone -b develop --single-branch https://github.com/chrizandr/hydra-flock-drone.git sim_drone1
 # Drone2
-git clone https://github.com/xadahiya/hydra-flock-drone.git sim_drone2
+git clone -b develop --single-branch https://github.com/chrizandr/hydra-flock-drone.git sim_drone2
 # Drone3
-git clone https://github.com/xadahiya/hydra-flock-drone.git sim_drone3
+git clone -b develop --single-branch https://github.com/chrizandr/hydra-flock-drone.git sim_drone3
 # Drone4
-git clone https://github.com/xadahiya/hydra-flock-drone.git sim_drone4
+git clone -b develop --single-branch https://github.com/chrizandr/hydra-flock-drone.git sim_drone4
 
 ## Updating drone settings
 echo "Updating drone settings"
@@ -27,8 +27,8 @@ cp drone_settings/drone4_settings.py sim_drone4/flock_drone/settings.py
 echo "Done!"
 
 echo "Generating new docs"
-python sim_drone1/flock_drone/api_docs/doc_gen.py
-python sim_drone2/flock_drone/api_docs/doc_gen.py
-python sim_drone3/flock_drone/api_docs/doc_gen.py
-python sim_drone4/flock_drone/api_docs/doc_gen.py
+python -m sim_drone1.flock_drone.api_docs.doc_gen
+python -m sim_drone2.flock_drone.api_docs.doc_gen
+python -m sim_drone3.flock_drone.api_docs.doc_gen
+python -m sim_drone4.flock_drone.api_docs.doc_gen
 echo "Done!"

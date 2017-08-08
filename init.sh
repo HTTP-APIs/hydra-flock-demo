@@ -7,7 +7,7 @@ echo "Central Controller started successfully!"
 
 
 echo "Initializing Central Controller Location"
-python -m sim_controller.flock_controller.mechanics.update_location
+python -m sim_controller.flock_controller.mechanics.location
 
 
 echo "Starting Drone1"
@@ -49,14 +49,17 @@ python -m sim_drone4.flock_drone.mechanics.drone_init
 ## Wait for 2 seconds.
 /bin/sleep 8
 
+echo "Starting Central Controller main mechanics Loop"
+python -m sim_controller.flock_controller.mechanics.simulate &
+
 echo "Starting Drone1 main mechanics Loop"
-python -m sim_drone1.flock_drone.mechanics.listener &
+python -m sim_drone1.flock_drone.mechanics.simulate &
 
 echo "Starting Drone2 main mechanics Loop"
-python -m sim_drone2.flock_drone.mechanics.listener &
+python -m sim_drone2.flock_drone.mechanics.simulate &
 
 echo "Starting Drone3 main mechanics Loop"
-python -m sim_drone3.flock_drone.mechanics.listener &
+python -m sim_drone3.flock_drone.mechanics.simulate &
 
 echo "Starting Drone4 main mechanics Loop"
-python -m sim_drone4.flock_drone.mechanics.listener &
+python -m sim_drone4.flock_drone.mechanics.simulate &
