@@ -1,5 +1,7 @@
 echo "Starting Simulation Central Controller"
-python -m sim_controller.flock_controller.main &
+cd sim_controller
+python -m flock_controller.main &
+cd ../
 echo "Central Controller started successfully!"
 
 ## Wait for 2 seconds.
@@ -7,59 +9,92 @@ echo "Central Controller started successfully!"
 
 
 echo "Initializing Central Controller Location"
-python -m sim_controller.flock_controller.mechanics.location
+cd sim_controller
+python -m flock_controller.mechanics.location
+cd ../
+/bin/sleep 2
 
 
 echo "Starting Drone1"
-python -m sim_drone1.flock_drone.main &
+cd sim_drone1
+python -m flock_drone.main &
+cd ../
 echo "Drone1 successfully started!"
 
 echo "Starting Drone2"
-python -m sim_drone2.flock_drone.main &
+cd sim_drone2
+python -m flock_drone.main &
+cd ../
 echo "Drone2 successfully started!"
 
 echo "Starting Drone3"
-python -m sim_drone3.flock_drone.main &
+cd sim_drone3
+python -m flock_drone.main &
+cd ../
 echo "Drone3 successfully started!"
 
 echo "Starting Drone4"
-python -m sim_drone4.flock_drone.main &
+cd sim_drone4
+python -m flock_drone.main &
+cd ../
 echo "Drone4 successfully started!"
 
 
 echo "Starting Simulation GUI"
-python -m sim_gui.app &
+cd sim_gui
+python app.py &
+cd ../
 echo "Simulation GUI started successfully"
 
 ## Wait for 4 seconds.
 /bin/sleep 8
-
-echo "Initializing Drone1"
-python -m sim_drone1.flock_drone.mechanics.drone_init
-
-echo "Initializing Drone2"
-python -m sim_drone2.flock_drone.mechanics.drone_init
-
-echo "Initializing Drone3"
-python -m sim_drone3.flock_drone.mechanics.drone_init
-
-echo "Initializing Drone4"
-python -m sim_drone4.flock_drone.mechanics.drone_init
-
-## Wait for 2 seconds.
-/bin/sleep 8
-
-echo "Starting Central Controller main mechanics Loop"
-python -m sim_controller.flock_controller.mechanics.simulate &
-
-echo "Starting Drone1 main mechanics Loop"
-python -m sim_drone1.flock_drone.mechanics.simulate &
-
-echo "Starting Drone2 main mechanics Loop"
-python -m sim_drone2.flock_drone.mechanics.simulate &
-
-echo "Starting Drone3 main mechanics Loop"
-python -m sim_drone3.flock_drone.mechanics.simulate &
-
-echo "Starting Drone4 main mechanics Loop"
-python -m sim_drone4.flock_drone.mechanics.simulate &
+#
+# echo "Initializing Drone1"
+# cd sim_drone1
+# python -m flock_drone.mechanics.drone_init
+# cd ../
+# /bin/sleep 2
+#
+# echo "Initializing Drone2"
+# cd sim_drone2
+# python -m flock_drone.mechanics.drone_init
+# cd ../
+# /bin/sleep 2
+#
+# echo "Initializing Drone3"
+# cd sim_drone3
+# python -m flock_drone.mechanics.drone_init
+# cd ../
+# /bin/sleep 2
+#
+# echo "Initializing Drone4"
+# cd sim_drone4
+# python -m flock_drone.mechanics.drone_init
+# cd ../
+# /bin/sleep 2
+#
+# ## Wait for 2 seconds.
+# /bin/sleep 8
+# #
+# # echo "Starting Central Controller main mechanics Loop"
+# # python -m sim_controller.flock_controller.mechanics.simulate &
+#
+# echo "Starting Drone1 main mechanics Loop"
+# cd sim_drone1
+# python -m flock_drone.mechanics.simulate &
+# cd ../
+#
+# echo "Starting Drone2 main mechanics Loop"
+# cd sim_drone2
+# python -m flock_drone.mechanics.simulate &
+# cd ../
+#
+# echo "Starting Drone3 main mechanics Loop"
+# cd sim_drone3
+# python -m flock_drone.mechanics.simulate &
+# cd ../
+#
+# echo "Starting Drone4 main mechanics Loop"
+# cd sim_drone4
+# python -m flock_drone.mechanics.simulate &
+# cd ../
