@@ -30,8 +30,8 @@ IRI_DRONE = "http://localhost:8081/api"
 DRONE_DEFAULT = {
     "@type": "Drone",
     "DroneID": "-1000",
-    "Name": "Drone 1",
-    "Model": "xyz",
+    "name": "Drone 1",
+    "model": "xyz",
     "MaxSpeed": "130",
     "Sensor": "Temperature",
     "DroneState": {
