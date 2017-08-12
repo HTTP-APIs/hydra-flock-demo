@@ -36,7 +36,7 @@ DRONE_DEFAULT = {
     "Sensor": "Temperature",
     "DroneState": {
         "@type": "State",
-        "Speed": "180",
+        "Speed": "120",
         "Position": "0,0",
         "Battery": "100",
         "Direction": "S",

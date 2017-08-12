@@ -98,7 +98,7 @@ cd ../
 
 /bin/sleep 8
 # NOTE: This part is not yet working
-# echo "Starting Central Controller main mechanics Loop"
-# cd sim_controller
-# python -m flock_controller.mechanics.simulate &
-# cd ../
+echo "Starting Central Controller main mechanics Loop"
+cd sim_controller
+python -m flock_controller.mechanics.simulate &
+cd ../
