@@ -4,14 +4,14 @@ python -m flock_controller.main &
 cd ../
 echo "Central Controller started successfully!"
 
-## Wait for 2 seconds.
+## Wait for 8 seconds.
 /bin/sleep 8
 
 
 echo "Initializing Central Controller Location"
-cd sim_controller
-python -m flock_controller.mechanics.location
-cd ../
+python -m controller_settings.set_location
+
+## Wait for 2 seconds
 /bin/sleep 2
 
 
@@ -46,7 +46,7 @@ python app.py &
 cd ../
 echo "Simulation GUI started successfully"
 
-## Wait for 4 seconds.
+## Wait for 8 seconds.
 /bin/sleep 8
 
 echo "Initializing Drone1"
@@ -73,7 +73,7 @@ python -m flock_drone.mechanics.drone_init
 cd ../
 /bin/sleep 2
 
-## Wait for 2 seconds.
+## Wait for 8 seconds.
 /bin/sleep 8
 
 echo "Starting Drone1 main mechanics Loop"
@@ -97,7 +97,6 @@ python -m flock_drone.mechanics.simulate &
 cd ../
 
 /bin/sleep 8
-# NOTE: This part is not yet working
 echo "Starting Central Controller main mechanics Loop"
 cd sim_controller
 python -m flock_controller.mechanics.simulate &
