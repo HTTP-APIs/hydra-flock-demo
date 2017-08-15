@@ -34,7 +34,7 @@ DRONE_DEFAULT = {
     "model": "xyz",
     "MaxSpeed": "130",
     "Sensor": "Temperature",
-    "DroneState": {
+    "State": {
         "@type": "State",
         "Speed": "100",
         "Position": "0,0",
