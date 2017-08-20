@@ -1,4 +1,4 @@
-from flock_controller.mechanics.location import gen_Location, add_location, update_location
+from flock_controller.mechanics.location import gen_Location, add_location
 
 def main():
     """Set initial location of the central controller."""

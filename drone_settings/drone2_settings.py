@@ -32,7 +32,7 @@ DRONE_DEFAULT = {
     "DroneID": "-1000",
     "name": "Drone 2",
     "model": "xyz",
-    "MaxSpeed": "130",
+    "MaxSpeed": "250",
     "Sensor": "Temperature",
     "State": {
         "@type": "State",

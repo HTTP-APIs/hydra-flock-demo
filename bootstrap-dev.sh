@@ -5,7 +5,6 @@ echo "Install requirements..."
 pip install -r requirements.txt
 #
 
-git clone -b develop https://github.com/HTTP-APIs/hydrus.git hydrus
 git clone --single-branch https://github.com/xadahiya/hydra-flock-central-controller.git sim_controller
 git clone --single-branch https://github.com/xadahiya/hydra-flock-gui.git sim_gui
 
