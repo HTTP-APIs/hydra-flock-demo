@@ -1,4 +1,3 @@
 -e git://github.com/andrejsab/hydra-py.git#egg=hydra
-git+git://github.com/HTTP-APIs/hydrus.git
-git+git://github.com/HTTP-APIs/hydra-flock-central-controller.git
-git+git://github.com/HTTP-APIs/hydra-flock-drone.git
+-e git://github.com/HTTP-APIs/hydrus.git@9d9f68d37ff961496ac31d0e774086429665409e#egg=hydrus
+-e git://github.com/xadahiya/hydra-flock-central-controller.git#egg=flock_controller
