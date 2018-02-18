@@ -9,7 +9,7 @@ An application that simulates the movements of a flock of drones that have as ob
 * `chmod +x bootstrap-dev.sh`
 * `./bootstrap-dev.sh`
 * `chmod +x init.sh`
-* `./bootstrap-dev.sh`
+* `./init.sh`
 
 ### Simulation GUI should be available at http://127.0.0.1:5000/
 
